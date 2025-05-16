@@ -35,6 +35,7 @@ Whether you're looking for a new job or just want a place to show off your work,
 
 Clone the repo:
 git clone https://github.com/CLBlue60/ProFileMaker
+
 cd profilemaker
 
 
