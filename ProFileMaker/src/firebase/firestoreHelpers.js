@@ -1,32 +1,33 @@
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
-export const savePortfolio = async (userId, data) => {
-  await setDoc(doc(db, "portfolios", userId), data);
+// Unified user document operations
+export const getUserDocument = async (userId) => {
+  const docRef = doc(db, "users", userId);
+  const docSnap = await getDoc(docRef);
+  return docSnap.exists() ? docSnap.data() : null;
+};
+
+export const createUserDocument = async (userId, data) => {
+  await setDoc(doc(db, "users", userId), {
+    createdAt: new Date(),
+    ...data
+  });
+};
+
+export const updateUserDocument = async (userId, data) => {
+  await updateDoc(doc(db, "users", userId), data);
+};
+
+// Portfolio-specific operations
+export const savePortfolio = async (userId, portfolioData) => {
+  await updateUserDocument(userId, {
+    portfolio: portfolioData,
+    updatedAt: new Date()
+  });
 };
 
 export const getPortfolio = async (userId) => {
-  const docSnap = await getDoc(doc(db, "portfolios", userId));
-  return docSnap.exists() ? docSnap.data() : null;
-};
-export const saveUserData = async (userId, data) => {
-  await setDoc(doc(db, "users", userId), data);
-};
-export const getUserData = async (userId) => {
-  const docSnap = await getDoc(doc(db, "users", userId));
-  return docSnap.exists() ? docSnap.data() : null;
-};
-export const saveUserSettings = async (userId, data) => {
-  await setDoc(doc(db, "settings", userId), data);
-};
-export const getUserSettings = async (userId) => {
-  const docSnap = await getDoc(doc(db, "settings", userId));
-  return docSnap.exists() ? docSnap.data() : null;
-};
-export const saveUserProfile = async (userId, data) => {
-  await setDoc(doc(db, "profiles", userId), data);
-};
-export const getUserProfile = async (userId) => {
-  const docSnap = await getDoc(doc(db, "profiles", userId));
-  return docSnap.exists() ? docSnap.data() : null;
+  const userDoc = await getUserDocument(userId);
+  return userDoc?.portfolio || null;
 };

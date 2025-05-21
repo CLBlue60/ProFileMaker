@@ -1,28 +1,56 @@
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile
+} from "firebase/auth";
 import { auth } from "./firebaseConfig";
 
+// Auth actions
+export const signup = async (email, password, displayName) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(userCredential.user, { displayName });
+    return { success: true, user: userCredential.user };
+  } catch (error) {
+    return { success: false, error: handleAuthError(error) };
+  }
+};
+
 export const login = async (email, password) => {
-  return signInWithEmailAndPassword(auth, email, password);
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    return { success: true, user: userCredential.user };
+  } catch (error) {
+    return { success: false, error: handleAuthError(error) };
+  }
 };
 
 export const logout = async () => {
-  return signOut(auth);
+  await signOut(auth);
 };
-export const isLoggedIn = () => {
-  return auth.currentUser !== null;
+
+// Error handling
+export const handleAuthError = (error) => {
+  switch (error.code) {
+    case 'auth/email-already-in-use':
+      return 'Email already in use';
+    case 'auth/invalid-email':
+      return 'Invalid email address';
+    case 'auth/weak-password':
+      return 'Password must be at least 6 characters';
+    case 'auth/user-not-found':
+      return 'No account found with this email';
+    case 'auth/wrong-password':
+      return 'Incorrect password';
+    default:
+      return 'Authentication failed. Please try again.';
+  }
 };
-export const getCurrentUser = () => {
-  return auth.currentUser;
-};
-export const getUserEmail = () => {
-  const user = getCurrentUser();
-  return user ? user.email : null;
-};
-export const getUserId = () => {
-  const user = getCurrentUser();
-  return user ? user.uid : null;
-};
-export const getUserDisplayName = () => {
-  const user = getCurrentUser();
-  return user ? user.displayName : null;
-};
+
+// User state
+export const getCurrentUser = () => auth.currentUser;
+export const isLoggedIn = () => !!auth.currentUser;
+export const getUserEmail = () => getCurrentUser()?.email;
+export const getUserId = () => getCurrentUser()?.uid;
+export const getUserDisplayName = () => getCurrentUser()?.displayName;

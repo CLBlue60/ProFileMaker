@@ -3,14 +3,17 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyCVH4qzsIH3QzWWd8DO1DDbgdc7gCrindc",
+  authDomain: "profilemaker-105e2.firebaseapp.com",
+  projectId: "profilemaker-105e2",
+  storageBucket: "profilemaker-105e2.firebasestorage.app",
+  messagingSenderId: "1062153916881",
+  appId: "1:1062153916881:web:b677a0a3c8c6a1202810f0",
+  measurementId: "G-DSQHPMG9Z0",
 };
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+export default app;
