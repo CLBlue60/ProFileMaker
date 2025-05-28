@@ -1,33 +1,64 @@
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
-// Unified user document operations
-export const getUserDocument = async (userId) => {
-  const docRef = doc(db, "users", userId);
-  const docSnap = await getDoc(docRef);
-  return docSnap.exists() ? docSnap.data() : null;
+// Domain Operations
+export const checkDomainAvailable = async (domain) => {
+  if (!domain || domain.length < 3) return false;
+  const domainDoc = await getDoc(doc(db, "domains", domain));
+  return !domainDoc.exists();
 };
 
-export const createUserDocument = async (userId, data) => {
-  await setDoc(doc(db, "users", userId), {
-    createdAt: new Date(),
-    ...data
-  });
+export const publishProfile = async (userId, domain) => {
+  // Validate domain format
+  if (!/^[a-z0-9-]{3,20}$/.test(domain)) {
+    throw new Error(
+      "Domain can only contain lowercase letters, numbers, and hyphens (3-20 chars)"
+    );
+  }
+
+  // Check availability
+  const isAvailable = await checkDomainAvailable(domain);
+  if (!isAvailable) {
+    throw new Error("Domain is already taken");
+  }
+
+  // Reserve domain and update profile
+  await Promise.all([
+    setDoc(doc(db, "domains", domain), {
+      userId,
+      claimedAt: serverTimestamp(),
+    }),
+    updateDoc(doc(db, "profiles", userId), {
+      isPublished: true,
+      domain,
+      publishedAt: serverTimestamp(),
+      liveUrl: `${domain}.profilemaker.com`,
+    }),
+  ]);
+
+  return {
+    success: true,
+    url: `${domain}.profilemaker.com`,
+  };
 };
 
-export const updateUserDocument = async (userId, data) => {
-  await updateDoc(doc(db, "users", userId), data);
-};
+// Get published profile data
+export const getPublishedProfile = async (domain) => {
+  const domainDoc = await getDoc(doc(db, "domains", domain));
+  if (!domainDoc.exists()) throw new Error("Profile not found");
 
-// Portfolio-specific operations
-export const savePortfolio = async (userId, portfolioData) => {
-  await updateUserDocument(userId, {
-    portfolio: portfolioData,
-    updatedAt: new Date()
-  });
-};
+  const profileDoc = await getDoc(doc(db, "profiles", domainDoc.data().userId));
+  if (!profileDoc.exists()) throw new Error("Profile data not found");
 
-export const getPortfolio = async (userId) => {
-  const userDoc = await getUserDocument(userId);
-  return userDoc?.portfolio || null;
+  return {
+    ...profileDoc.data(),
+    domain: domain,
+    id: profileDoc.id,
+  };
 };

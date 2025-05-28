@@ -9,6 +9,9 @@ import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Features from './pages/Features';
+import Templates from './pages/Templates';
+import Pricing from './pages/Pricing';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +22,9 @@ const router = createBrowserRouter([
       { path: 'signup', element: <Signup /> },
       { path: 'login', element: <Login /> },
       { path: 'dashboard', element: <Dashboard /> },
+      { path: 'features', element: <Features /> },
+      { path: 'templates', element: <Templates /> },
+      { path: 'pricing', element: <Pricing /> },
     ],
   },
 ]);
@@ -30,3 +36,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </AuthProvider>
   </React.StrictMode>
 );
+
+

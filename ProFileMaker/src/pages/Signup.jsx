@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { signup } from "../authHelpers";
+import { signup } from "../firebase/authHelpers";
 
 export default function Signup() {
   const [formData, setFormData] = useState({

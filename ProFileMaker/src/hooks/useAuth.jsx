@@ -5,7 +5,7 @@ import {
   login as authLogin,
   logout as authLogout,
   signup as authSignup,
-} from "../authHelpers";
+} from "../firebase/authHelpers";
 
 // Create auth context
 const AuthContext = createContext();
@@ -60,7 +60,6 @@ export function AuthProvider({ children }) {
   );
 }
 
-// Custom hook to use auth
 export const useAuth = () => {
   return useContext(AuthContext);
 };
