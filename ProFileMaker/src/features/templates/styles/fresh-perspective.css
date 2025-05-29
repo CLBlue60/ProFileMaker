@@ -1,0 +1,40 @@
+.fp-template {
+  --primary: var(--fp-primary, #7AE582);
+  --secondary: var(--fp-secondary, #2B2D42);
+  --accent: var(--fp-accent, #EDF2F4);
+
+  font-family: 'Roboto', sans-serif;
+  background: var(--accent);
+  color: var(--secondary);
+  min-height: 100vh;
+}
+
+.fp-header {
+  background: var(--primary);
+  padding: 2rem;
+  color: var(--secondary);
+  text-align: center;
+}
+
+.fp-main {
+  padding: 2rem;
+}
+
+.fp-section-title {
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.fp-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fp-skill-tag {
+  background: var(--primary);
+  color: var(--secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+}

@@ -1,0 +1,33 @@
+.as-template {
+  --primary: var(--as-primary, #3E92CC);
+  --secondary: var(--as-secondary, #F9F9F9);
+  --accent: var(--as-accent, #1B1B1E);
+
+  font-family: 'Merriweather', serif;
+  background: var(--secondary);
+  color: var(--accent);
+  min-height: 100vh;
+}
+
+.as-header {
+  background: var(--primary);
+  color: var(--secondary);
+  padding: 2rem;
+  text-align: center;
+}
+
+.as-main {
+  padding: 2rem;
+}
+
+.as-section-title {
+  font-weight: bold;
+  color: var(--primary);
+  border-bottom: 1px solid var(--primary);
+  margin-bottom: 1rem;
+}
+
+.as-skill-list li {
+  list-style-type: square;
+  margin-left: 1rem;
+}

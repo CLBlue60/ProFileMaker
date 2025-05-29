@@ -62,3 +62,8 @@ export const getPublishedProfile = async (domain) => {
     id: profileDoc.id,
   };
 };
+
+export const saveUserProfile = async (userId, profile) => {
+  await setDoc(doc(db, "profiles", userId), profile, { merge: true });
+  return true;
+};

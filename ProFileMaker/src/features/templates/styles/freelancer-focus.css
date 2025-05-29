@@ -1,0 +1,31 @@
+.ff-template {
+  --primary: var(--ff-primary, #236B4E);
+  --secondary: var(--ff-secondary, #FFD700);
+  --accent: var(--ff-accent, #C0C0C0);
+
+  font-family: 'Trebuchet MS', sans-serif;
+  background: var(--accent);
+  color: var(--primary);
+  min-height: 100vh;
+}
+
+.ff-header {
+  background: var(--primary);
+  color: var(--secondary);
+  padding: 2rem;
+  text-align: center;
+}
+
+.ff-main {
+  padding: 2rem;
+}
+
+.ff-skill-block {
+  background: var(--secondary);
+  color: var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin: 0.25rem;
+  display: inline-block;
+  font-weight: bold;
+}

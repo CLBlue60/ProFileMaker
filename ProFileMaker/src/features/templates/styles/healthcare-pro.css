@@ -1,0 +1,34 @@
+.hp-template {
+  --primary: var(--hp-primary, #DEF2F1);
+  --secondary: var(--hp-secondary, #3AAFA9);
+  --accent: var(--hp-accent, #17252A);
+
+  font-family: 'Quicksand', sans-serif;
+  background: var(--primary);
+  color: var(--accent);
+  min-height: 100vh;
+}
+
+.hp-header {
+  text-align: center;
+  padding: 2.5rem;
+  background: var(--secondary);
+  color: var(--primary);
+}
+
+.hp-main {
+  padding: 2rem;
+}
+
+.hp-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hp-skill-tag {
+  background: var(--accent);
+  color: var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+}

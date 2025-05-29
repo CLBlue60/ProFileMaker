@@ -1,0 +1,34 @@
+.sb-template {
+  --primary: var(--sb-primary, #A7C7E7);
+  --secondary: var(--sb-secondary, #2E4057);
+  --accent: var(--sb-accent, #F6F5F5);
+
+  font-family: 'Open Sans', sans-serif;
+  background: var(--accent);
+  color: var(--secondary);
+  min-height: 100vh;
+}
+
+.sb-header {
+  background: var(--primary);
+  padding: 2.5rem;
+  text-align: center;
+  color: var(--secondary);
+}
+
+.sb-main {
+  padding: 2rem;
+}
+
+.sb-skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.sb-skill-item {
+  background: var(--primary);
+  color: var(--secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+}

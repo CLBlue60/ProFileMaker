@@ -1,0 +1,31 @@
+.cp-template {
+  --primary: var(--cp-primary, #FF6F61);
+  --secondary: var(--cp-secondary, #2E294E);
+  --accent: var(--cp-accent, #F6F7EB);
+
+  font-family: 'Lobster', cursive;
+  background: var(--accent);
+  color: var(--secondary);
+  min-height: 100vh;
+}
+
+.cp-header {
+  background: var(--primary);
+  padding: 2rem;
+  text-align: center;
+  color: var(--accent);
+}
+
+.cp-main {
+  padding: 2rem;
+}
+
+.cp-skill-badge {
+  background: var(--primary);
+  color: var(--accent);
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  font-weight: bold;
+  margin: 0.25rem;
+  display: inline-block;
+}

@@ -1,0 +1,42 @@
+.vs-template {
+  --primary: var(--vs-primary, #6A0572);
+  --secondary: var(--vs-secondary, #F9DB6D);
+  --accent: var(--vs-accent, #F5F5F5);
+
+  background: var(--primary);
+  color: var(--accent);
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+}
+
+.vs-header {
+  text-align: center;
+  background: var(--secondary);
+  padding: 2rem;
+}
+
+.vs-headline {
+  font-size: 1.25rem;
+  color: var(--primary);
+}
+
+.vs-section-title {
+  color: var(--secondary);
+}
+
+.vs-main {
+  padding: 2rem;
+}
+
+.vs-skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.vs-skill {
+  background: var(--secondary);
+  color: var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}

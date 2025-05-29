@@ -12,6 +12,8 @@ import Dashboard from './pages/Dashboard';
 import Features from './pages/Features';
 import Templates from './pages/Templates';
 import Pricing from './pages/Pricing';
+import TemplateDetail from './components/templates/TemplateDetail';
+import ProfileBuilder from './pages/profile-setup/ProFileBuilder';
 
 const router = createBrowserRouter([
   {
@@ -24,7 +26,9 @@ const router = createBrowserRouter([
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'features', element: <Features /> },
       { path: 'templates', element: <Templates /> },
+      { path: 'templates/:templateName', element: <TemplateDetail /> }, // Updated line
       { path: 'pricing', element: <Pricing /> },
+      { path: 'profile-builder', element: <ProfileBuilder /> },
     ],
   },
 ]);
@@ -36,5 +40,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </AuthProvider>
   </React.StrictMode>
 );
-
-

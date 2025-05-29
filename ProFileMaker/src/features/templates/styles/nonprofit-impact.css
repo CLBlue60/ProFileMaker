@@ -1,0 +1,30 @@
+.ni-template {
+  --primary: var(--ni-primary, #FFE156);
+  --secondary: var(--ni-secondary, #6A0572);
+  --accent: var(--ni-accent, #F5F5F5);
+
+  font-family: 'Ubuntu', sans-serif;
+  background: var(--accent);
+  color: var(--secondary);
+  min-height: 100vh;
+}
+
+.ni-header {
+  background: var(--primary);
+  padding: 2rem;
+  text-align: center;
+  color: var(--secondary);
+}
+
+.ni-main {
+  padding: 2rem;
+}
+
+.ni-skill-bubble {
+  background: var(--secondary);
+  color: var(--accent);
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  display: inline-block;
+  margin: 0.25rem;
+}

@@ -56,8 +56,8 @@ export default function Signup() {
             <input
               type="text"
               value={formData.displayName}
-              onChange={(e) => setFormData({...formData, displayName: e.target.value})}
-              className={`w-full p-2 rounded border ${errors.displayName ? 'border-red-500' : 'border-text'}`}
+              onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
+              className={`w-full p-2 rounded border bg-white dark:bg-white text-text dark:text-black ${errors.displayName ? 'border-red-500' : 'border-text'}`}
             />
             {errors.displayName && <p className="text-red-500 text-xs mt-1">{errors.displayName}</p>}
           </div>
@@ -67,8 +67,8 @@ export default function Signup() {
             <input
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className={`w-full p-2 rounded border ${errors.email ? 'border-red-500' : 'border-text'}`}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className={`w-full p-2 rounded border bg-white dark:bg-white text-text dark:text-black ${errors.email ? 'border-red-500' : 'border-text'}`}
             />
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
@@ -78,8 +78,8 @@ export default function Signup() {
             <input
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className={`w-full p-2 rounded border ${errors.password ? 'border-red-500' : 'border-text'}`}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              className={`w-full p-2 rounded border bg-white dark:bg-white text-text dark:text-black ${errors.password ? 'border-red-500' : 'border-text'}`}
             />
             {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
           </div>
@@ -103,3 +103,4 @@ export default function Signup() {
     </div>
   );
 }
+

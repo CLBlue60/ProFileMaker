@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { saveUserProfile } from '../firestoreHelpers';
+import { saveUserProfile } from '../../firebase/firestoreHelpers';
 
 export default function ProfileBuilder() {
   const { user } = useAuth();
@@ -22,7 +22,7 @@ export default function ProfileBuilder() {
     <div className="max-w-4xl mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-6">Build Your Profile</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 text-black">
         <div>
           <label className="block mb-2">Full Name</label>
           <input

@@ -27,13 +27,13 @@ export default {
           900: "rgb(30 58 138)",
         },
         accent: {
-          DEFAULT: "rgb(255 215 0)", // gold
+          DEFAULT: "rgb(204 173 0)", // darker gold
           50: "rgb(255 249 230)",
           100: "rgb(255 242 204)",
           200: "rgb(255 230 153)",
-          300: "rgb(255 215 0)",
-          400: "rgb(230 194 0)",
-          500: "rgb(204 173 0)",
+          300: "rgb(230 194 0)",
+          400: "rgb(204 173 0)",
+          500: "rgb(153 129 0)", // even darker for hover or emphasis
         },
       },
     },

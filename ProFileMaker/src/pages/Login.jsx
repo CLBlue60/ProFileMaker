@@ -25,10 +25,7 @@ export default function Login() {
     if (!validate()) return;
 
     setLoading(true);
-    const { success, error } = await login(
-      formData.email,
-      formData.password
-    );
+    const { success, error } = await login(formData.email, formData.password);
 
     if (success) {
       navigate('/dashboard');
@@ -59,8 +56,8 @@ export default function Login() {
             <input
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className={`w-full p-2 rounded border ${errors.email ? 'border-red-500' : 'border-text/30 dark:border-text-dark/30'} bg-transparent`}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className={`w-full p-2 rounded border bg-white dark:bg-white text-text dark:text-black ${errors.email ? 'border-red-500' : 'border-text/30 dark:border-text-dark/30'}`}
             />
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
@@ -72,8 +69,8 @@ export default function Login() {
             <input
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className={`w-full p-2 rounded border ${errors.password ? 'border-red-500' : 'border-text/30 dark:border-text-dark/30'} bg-transparent`}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              className={`w-full p-2 rounded border bg-white dark:bg-white text-text dark:text-black ${errors.password ? 'border-red-500' : 'border-text/30 dark:border-text-dark/30'}`}
             />
             {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
           </div>
@@ -87,7 +84,7 @@ export default function Login() {
           {loading ? 'Logging In...' : 'Log In'}
         </button>
 
-        <div className="mt-4 text-center text-sm text-text/80 dark:text-text-dark/80">
+        <div className="mt-4 text-center text-sm text-text dark:text-black">
           <p>
             Don't have an account?{' '}
             <Link to="/signup" className="text-accent hover:underline">

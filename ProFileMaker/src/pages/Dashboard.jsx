@@ -9,7 +9,7 @@ export default function Dashboard() {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-primary dark:text-accent">
-            Welcome, {user?.displayName || 'User'}!
+            Welcome, <span className="text-accent">{user?.displayName || 'User'}!</span>
           </h1>
           <button
             onClick={logout}
@@ -29,9 +29,9 @@ export default function Dashboard() {
               <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-accent/10 flex items-center justify-center">
                 <span className="text-primary dark:text-accent text-xl">👤</span>
               </div>
-              <h2 className="text-xl font-semibold text-text dark:text-text-dark">My Profile</h2>
+              <h2 className="text-xl font-semibold text-primary dark:text-primary">My Profile</h2>
             </div>
-            <p className="mt-3 text-text/80 dark:text-text-dark/80">
+            <p className="mt-3 text-accent">
               View and edit your public profile
             </p>
           </Link>
@@ -45,9 +45,9 @@ export default function Dashboard() {
               <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-accent/10 flex items-center justify-center">
                 <span className="text-primary dark:text-accent text-xl">💼</span>
               </div>
-              <h2 className="text-xl font-semibold text-text dark:text-text-dark">My Portfolio</h2>
+              <h2 className="text-xl font-semibold text-primary dark:text-primary">My Portfolio</h2>
             </div>
-            <p className="mt-3 text-text/80 dark:text-text-dark/80">
+            <p className="mt-3 text-accent">
               Manage your projects and work samples
             </p>
           </Link>
@@ -61,34 +61,34 @@ export default function Dashboard() {
               <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-accent/10 flex items-center justify-center">
                 <span className="text-primary dark:text-accent text-xl">⚙️</span>
               </div>
-              <h2 className="text-xl font-semibold text-text dark:text-text-dark">Settings</h2>
+              <h2 className="text-xl font-semibold text-primary dark:text-primary">Settings</h2>
             </div>
-            <p className="mt-3 text-text/80 dark:text-text-dark/80">
+            <p className="mt-3 text-accent">
               Configure your account preferences
             </p>
           </Link>
         </div>
 
         <div className="mt-8 bg-white dark:bg-base-dark p-6 rounded-xl shadow-md border border-accent/20">
-          <h2 className="text-xl font-semibold mb-4 text-text dark:text-text-dark">
+          <h2 className="text-xl font-semibold mb-4 text-primary dark:text-primary">
             Quick Actions
           </h2>
           <div className="flex flex-wrap gap-4">
             <Link
               to="/profile/edit"
-              className="px-4 py-2 rounded-md bg-primary/10 dark:bg-accent/10 text-primary dark:text-accent hover:bg-primary/20 dark:hover:bg-accent/20 transition"
+              className="px-4 py-2 rounded-md bg-primary/10 dark:bg-accent/10 text-accent hover:bg-primary/20 dark:hover:bg-accent/20 transition"
             >
               Edit Profile
             </Link>
             <Link
               to="/portfolio/new"
-              className="px-4 py-2 rounded-md bg-primary/10 dark:bg-accent/10 text-primary dark:text-accent hover:bg-primary/20 dark:hover:bg-accent/20 transition"
+              className="px-4 py-2 rounded-md bg-primary/10 dark:bg-accent/10 text-accent hover:bg-primary/20 dark:hover:bg-accent/20 transition"
             >
               Add Project
             </Link>
             <Link
               to="/templates"
-              className="px-4 py-2 rounded-md bg-primary/10 dark:bg-accent/10 text-primary dark:text-accent hover:bg-primary/20 dark:hover:bg-accent/20 transition"
+              className="px-4 py-2 rounded-md bg-primary/10 dark:bg-accent/10 text-accent hover:bg-primary/20 dark:hover:bg-accent/20 transition"
             >
               Change Template
             </Link>

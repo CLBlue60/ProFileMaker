@@ -1,0 +1,39 @@
+.uc-template {
+  --primary: var(--uc-primary, #22223B);
+  --secondary: var(--uc-secondary, #F2E9E4);
+  --accent: var(--uc-accent, #4A4E69);
+
+  font-family: 'Georgia', serif;
+  background: var(--primary);
+  color: var(--secondary);
+  min-height: 100vh;
+}
+
+.uc-header {
+  padding: 2rem;
+  background: var(--accent);
+  color: var(--secondary);
+  text-align: center;
+}
+
+.uc-headline {
+  font-style: italic;
+  color: var(--primary);
+}
+
+.uc-main {
+  padding: 2rem;
+}
+
+.uc-skill-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.uc-skill-box {
+  background: var(--secondary);
+  color: var(--primary);
+  padding: 0.75rem;
+  border-radius: 4px;
+}

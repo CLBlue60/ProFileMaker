@@ -1,0 +1,30 @@
+.eo-template {
+  --primary: var(--eo-primary, #FFB997);
+  --secondary: var(--eo-secondary, #2E4057);
+  --accent: var(--eo-accent, #F6F5F5);
+
+  font-family: 'Arial Rounded MT Bold', sans-serif;
+  background: var(--accent);
+  color: var(--secondary);
+  min-height: 100vh;
+}
+
+.eo-header {
+  background: var(--primary);
+  text-align: center;
+  padding: 2rem;
+  color: var(--secondary);
+}
+
+.eo-main {
+  padding: 2rem;
+}
+
+.eo-skill-item {
+  background: var(--primary);
+  color: var(--secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  margin: 0.25rem;
+  display: inline-block;
+}

@@ -1,0 +1,36 @@
+.pm-template {
+  --primary: var(--pm-primary, #FFFFFF);
+  --secondary: var(--pm-secondary, #1A1A1A);
+  --accent: var(--pm-accent, #0077B6);
+
+  font-family: 'Helvetica Neue', sans-serif;
+  background: var(--primary);
+  color: var(--secondary);
+  min-height: 100vh;
+}
+
+.pm-header {
+  text-align: center;
+  padding: 2rem;
+  border-bottom: 1px solid var(--accent);
+}
+
+.pm-main {
+  padding: 2rem;
+}
+
+.pm-section-title {
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.pm-skill-pill {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 0.4rem 0.8rem;
+  border-radius: 16px;
+  margin: 0.25rem;
+  display: inline-block;
+}
