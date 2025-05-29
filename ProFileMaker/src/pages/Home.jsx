@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import ProfilePreview from '../components/ProfilePreview';
-import { motion } from 'framer-motion';
+// eslint-disable-next-line no-unused-vars
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
   const { user } = useAuth();

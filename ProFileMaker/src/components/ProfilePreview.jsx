@@ -160,6 +160,11 @@ export default function ProfilePreview() {
         >
           {/* Profile header */}
           <motion.div
+            key={activeTemplate + '-header'}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
             className="p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start border-b"
             style={{ borderColor: currentTemplate.colors.accent }}
             variants={item}
@@ -179,7 +184,7 @@ export default function ProfilePreview() {
                 animate={{ x: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                Sarah Chen
+                Jamie Abassy
               </motion.h2>
               <motion.p
                 className="text-lg mb-3"
@@ -268,8 +273,8 @@ export default function ProfilePreview() {
                   Contact
                 </h3>
                 <div className="space-y-1">
-                  <p>sarah@example.com</p>
-                  <p>linkedin.com/in/sarahchen</p>
+                  <p>jamie@example.com</p>
+                  <p>linkedin.com/in/jamieabassy</p>
                 </div>
               </motion.div>
             </div>
