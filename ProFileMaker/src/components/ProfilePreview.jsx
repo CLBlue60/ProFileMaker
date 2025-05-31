@@ -184,7 +184,7 @@ export default function ProfilePreview() {
                 animate={{ x: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                Jamie Abassy
+                Domineke Nelson
               </motion.h2>
               <motion.p
                 className="text-lg mb-3"
@@ -273,8 +273,8 @@ export default function ProfilePreview() {
                   Contact
                 </h3>
                 <div className="space-y-1">
-                  <p>jamie@example.com</p>
-                  <p>linkedin.com/in/jamieabassy</p>
+                  <p>DNelsohn@example.com</p>
+                  <p>linkedin.com/in/D'Nelson</p>
                 </div>
               </motion.div>
             </div>

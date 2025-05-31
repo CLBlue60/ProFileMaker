@@ -10,7 +10,7 @@
 
   .dark {
     --color-background: 15 23 42; /* slate-900 */
-    --color-foreground: 255 255 255; /* white */
+    --color-foreground: 204 173 0; /* gold */
   }
 
   body {

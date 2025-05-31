@@ -1,19 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { AuthProvider } from './hooks/useAuth';
+import { AuthProvider } from './hooks/UseAuth';
 import App from './App';
 import './index.css';
 
+// Layouts
+import DashboardLayout from './layouts/DashboardLayout';
+
+// Pages
 import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
 import Features from './pages/Features';
 import Templates from './pages/Templates';
 import Pricing from './pages/Pricing';
+import ProfileBuilder from './pages/profile-setup/ProfileBuilder';
+
+// Dashboard Pages
+import Dashboard from './pages/Dashboard';
+import ProfilePage from './pages/dashboard/ProfilePage';
+import EditProfilePage from './pages/dashboard/EditProfilePage';
+import PortfolioPage from './pages/dashboard/PortfolioPage';
+import NewProjectPage from './pages/dashboard/NewProjectPage';
+import SettingsPage from './pages/dashboard/SettingsPage';
 import TemplateDetail from './components/templates/TemplateDetail';
-import ProfileBuilder from './pages/profile-setup/ProFileBuilder';
+
+// Components
+import AuthGuard from './auth/AuthGuard';
 
 const router = createBrowserRouter([
   {
@@ -23,12 +37,29 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'signup', element: <Signup /> },
       { path: 'login', element: <Login /> },
-      { path: 'dashboard', element: <Dashboard /> },
       { path: 'features', element: <Features /> },
       { path: 'templates', element: <Templates /> },
-      { path: 'templates/:templateName', element: <TemplateDetail /> }, // Updated line
+      { path: 'templates/:templateName', element: <TemplateDetail /> },
       { path: 'pricing', element: <Pricing /> },
       { path: 'profile-builder', element: <ProfileBuilder /> },
+
+      // Protected Dashboard Routes
+      {
+        path: 'dashboard',
+        element: (
+          <AuthGuard>
+            <DashboardLayout />
+          </AuthGuard>
+        ),
+        children: [
+          { index: true, element: <Dashboard /> },
+          { path: 'profile', element: <ProfilePage /> },
+          { path: 'profile/edit', element: <EditProfilePage /> },
+          { path: 'portfolio', element: <PortfolioPage /> },
+          { path: 'portfolio/new', element: <NewProjectPage /> },
+          { path: 'settings', element: <SettingsPage /> },
+        ],
+      },
     ],
   },
 ]);

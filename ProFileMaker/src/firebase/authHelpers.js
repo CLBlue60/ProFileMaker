@@ -2,55 +2,95 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile
+  updateProfile,
+  onAuthStateChanged,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  deleteUser,
 } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 
 // Auth actions
-export const signup = async (email, password, displayName) => {
+export const authSignup = async (email, password, displayName) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(userCredential.user, { displayName });
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    if (displayName) {
+      await updateProfile(userCredential.user, { displayName });
+    }
     return { success: true, user: userCredential.user };
   } catch (error) {
     return { success: false, error: handleAuthError(error) };
   }
 };
 
-export const login = async (email, password) => {
+export const authLogin = async (email, password) => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     return { success: true, user: userCredential.user };
   } catch (error) {
     return { success: false, error: handleAuthError(error) };
   }
 };
 
-export const logout = async () => {
+export const authLogout = async () => {
   await signOut(auth);
 };
 
+export const setupAuthListener = (callback) => {
+  return onAuthStateChanged(auth, callback);
+};
+
 // Error handling
-export const handleAuthError = (error) => {
+const handleAuthError = (error) => {
   switch (error.code) {
-    case 'auth/email-already-in-use':
-      return 'Email already in use';
-    case 'auth/invalid-email':
-      return 'Invalid email address';
-    case 'auth/weak-password':
-      return 'Password must be at least 6 characters';
-    case 'auth/user-not-found':
-      return 'No account found with this email';
-    case 'auth/wrong-password':
-      return 'Incorrect password';
+    case "auth/email-already-in-use":
+      return "Email already in use";
+    case "auth/invalid-email":
+      return "Invalid email address";
+    case "auth/weak-password":
+      return "Password must be at least 6 characters";
+    case "auth/user-not-found":
+      return "No account found with this email";
+    case "auth/wrong-password":
+      return "Incorrect password";
     default:
-      return 'Authentication failed. Please try again.';
+      return "Authentication failed. Please try again.";
   }
 };
 
 // User state
 export const getCurrentUser = () => auth.currentUser;
 export const isLoggedIn = () => !!auth.currentUser;
-export const getUserEmail = () => getCurrentUser()?.email;
-export const getUserId = () => getCurrentUser()?.uid;
-export const getUserDisplayName = () => getCurrentUser()?.displayName;
+
+export async function signup(email, password, displayName) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    if (displayName) {
+      await updateProfile(userCredential.user, { displayName });
+    }
+    return { success: true, user: userCredential.user };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+export const reauthenticate = async (email, password) => {
+  const credential = EmailAuthProvider.credential(email, password);
+  return await reauthenticateWithCredential(auth.currentUser, credential);
+};
+
+export const deleteAuthUser = async () => {
+  return await deleteUser(auth.currentUser);
+};
