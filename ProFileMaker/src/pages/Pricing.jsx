@@ -6,47 +6,30 @@ export default function Pricing() {
 
   const plans = [
     {
-      name: "Starter",
-      price: "Free",
-      description: "Perfect for students and personal projects",
+      name: "Basic",
+      price: "$0",
+      description: "Great for students and personal use",
       features: [
         "1 Profile Template",
         "Basic Customization",
         "5 Project Showcases",
-        "Contact Form",
         "Basic Analytics"
       ],
       cta: user ? "Your Current Plan" : "Get Started"
     },
     {
-      name: "Professional",
-      price: "$9",
-      period: "/month",
-      description: "For freelancers and job seekers",
+      name: "Advanced",
+      price: "$19.99",
+      description: "Ideal for professionals and freelancers",
       features: [
         "All Templates",
         "Advanced Customization",
         "Unlimited Projects",
-        "Premium Contact Options",
         "Enhanced Analytics",
         "Custom Domain"
       ],
       popular: true,
       cta: "Upgrade Now"
-    },
-    {
-      name: "Team",
-      price: "$29",
-      period: "/month",
-      description: "For agencies and development teams",
-      features: [
-        "Everything in Professional",
-        "Up to 5 Team Members",
-        "Team Dashboard",
-        "Centralized Billing",
-        "Priority Support"
-      ],
-      cta: "Contact Sales"
     }
   ];
 
@@ -58,11 +41,11 @@ export default function Pricing() {
             Simple Pricing
           </h1>
           <p className="text-xl text-text/80 dark:text-text-dark/80 max-w-3xl mx-auto">
-            Choose the perfect plan for your needs
+            Choose the plan that works for you
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {plans.map((plan, index) => (
             <div
               key={index}
@@ -74,22 +57,15 @@ export default function Pricing() {
             >
               {plan.popular && (
                 <div className="absolute top-0 right-0 bg-accent text-white px-4 py-1 text-sm font-semibold rounded-bl-lg">
-                  Most Popular
+                  Great deal!
                 </div>
               )}
               <div className="p-8">
                 <h3 className="text-2xl font-semibold text-primary mb-2">
                   {plan.name}
                 </h3>
-                <div className="flex items-end mb-4">
-                  <span className="text-4xl font-bold text-accent">
-                    {plan.price}
-                  </span>
-                  {plan.period && (
-                    <span className="text-accent/80 ml-1">
-                      {plan.period}
-                    </span>
-                  )}
+                <div className="text-4xl font-bold text-accent mb-4">
+                  {plan.price}
                 </div>
                 <p className="text-accent/80 mb-6">
                   {plan.description}
@@ -105,7 +81,7 @@ export default function Pricing() {
                   ))}
                 </ul>
                 <Link
-                  to={user ? "/dashboard" : "/signup"}
+                  to={plan.cta === "Upgrade Now" ? "/upgrade" : user ? "/dashboard" : "/signup"}
                   className={`block w-full py-3 px-4 rounded-md text-center font-medium transition ${
                     plan.popular
                       ? 'bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg'
@@ -128,7 +104,7 @@ export default function Pricing() {
               We offer enterprise solutions and custom development for large teams.
             </p>
             <Link
-              to="/contact"
+              to="/inquiry"
               className="inline-block px-6 py-2 rounded-md border border-accent text-accent font-medium hover:bg-accent/10 transition"
             >
               Contact Our Sales Team

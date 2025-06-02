@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/UseAuth';
 import { useState, useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline';
+import Logo from './Logo';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -14,6 +15,7 @@ export default function Navbar() {
     { name: 'Features', href: '/features' },
     { name: 'Templates', href: '/templates' },
     { name: 'Pricing', href: '/pricing' },
+    { name: 'Contact', href: '/inquiry' }
   ];
 
   // Initialize dark mode
@@ -42,8 +44,8 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-primary dark:text-accent">ProFileMaker</span>
+          <Link to="/" className="flex items-center space-x-2 group">
+            <Logo />
           </Link>
 
           {/* Desktop Navigation */}

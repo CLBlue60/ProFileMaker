@@ -16,6 +16,7 @@ import Features from './pages/Features';
 import Templates from './pages/Templates';
 import Pricing from './pages/Pricing';
 import ProfileBuilder from './pages/profile-setup/ProfileBuilder';
+import Inquiry from './pages/Inquiry';
 
 // Dashboard Pages
 import Dashboard from './pages/Dashboard';
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
       { path: 'templates/:templateName', element: <TemplateDetail /> },
       { path: 'pricing', element: <Pricing /> },
       { path: 'profile-builder', element: <ProfileBuilder /> },
+      { path: 'inquiry', element: <Inquiry /> },
 
       // Protected Dashboard Routes
       {
