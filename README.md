@@ -19,7 +19,6 @@ Whether you're looking for a new job or just want a place to show off your work,
 - React
 - Tailwind CSS
 - React Router
-- Formik and Yup for forms and validation
 
 **Backend:**
 - Node.js
@@ -29,7 +28,6 @@ Whether you're looking for a new job or just want a place to show off your work,
 **Other Tools:**
 - JWT for auth
 - html2pdf.js or react-to-print for PDF generation
-- Vercel (frontend) + Render or Railway (backend) for deployment
 
 ## Getting Started
 
