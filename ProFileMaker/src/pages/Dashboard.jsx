@@ -1,15 +1,112 @@
 import { Link } from 'react-router-dom';
 import UserAvatar from '../components/UserAvatar';
 import { useAuth } from '../hooks/UseAuth';
+import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
+import { db } from '../firebase/firebaseConfig';
+import { useState, useEffect } from 'react';
+import { Skeleton } from '../components/ui/Skeleton';
+import { Alert } from '../components/ui/Alert';
 
 export default function Dashboard() {
   const { user, profile } = useAuth();
+  const [stats, setStats] = useState([]);
+  const [loadingStats, setLoadingStats] = useState(true);
+  const [statsError, setStatsError] = useState(null);
+  const [activity, setActivity] = useState([]);
+  const [loadingActivity, setLoadingActivity] = useState(true);
 
-  const stats = [
-    { name: 'Profile Views', value: '1,234', change: '+12%', changeType: 'positive' },
-    { name: 'Projects', value: '5', change: '+2', changeType: 'positive' },
-    { name: 'Connections', value: '89', change: '+3', changeType: 'positive' },
-  ];
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const unsubscribeCallbacks = [];
+
+    const setupProjectsListener = () => {
+      const q = query(
+        collection(db, 'projects'),
+        where('userId', '==', user.uid)
+      );
+      
+      const unsubscribe = onSnapshot(q, 
+        (snapshot) => {
+          const count = snapshot.size;
+          setStats(prev => updateStat(prev, 'Projects', count));
+        },
+        (error) => {
+          console.error('Projects listener error:', error);
+          setStatsError('Failed to load project count');
+        }
+      );
+      return unsubscribe;
+    };
+
+    const setupActivityListener = () => {
+      const q = query(
+        collection(db, 'activity'),
+        where('userId', '==', user.uid),
+        orderBy('timestamp', 'desc'),
+        limit(5)
+      );
+      
+      const unsubscribe = onSnapshot(q, 
+        (snapshot) => {
+          const activities = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            timestamp: doc.data().timestamp?.toDate()
+          }));
+          setActivity(activities);
+          setLoadingActivity(false);
+        },
+        (error) => {
+          console.error('Activity listener error:', error);
+          setStatsError('Failed to load recent activity');
+          setLoadingActivity(false);
+        }
+      );
+      return unsubscribe;
+    };
+
+    const updateStat = (currentStats, name, value) => {
+      const statIndex = currentStats.findIndex(s => s.name === name);
+      if (statIndex === -1) return currentStats;
+      
+      const oldValue = parseInt(currentStats[statIndex].value) || 0;
+      const change = value - oldValue;
+      
+      return [
+        ...currentStats.slice(0, statIndex),
+        {
+          ...currentStats[statIndex],
+          value: value.toLocaleString(),
+          change: `${change >= 0 ? '+' : ''}${change}`,
+          changeType: change >= 0 ? 'positive' : 'negative'
+        },
+        ...currentStats.slice(statIndex + 1)
+      ];
+    };
+
+    try {
+      setLoadingStats(true);
+      setStatsError(null);
+      setStats([
+        { name: 'Profile Views', value: (profile?.views || 0).toLocaleString(), change: '+0', changeType: 'positive' },
+        { name: 'Projects', value: '0', change: '+0', changeType: 'positive' },
+      ]);
+
+      unsubscribeCallbacks.push(setupProjectsListener());
+      unsubscribeCallbacks.push(setupActivityListener());
+
+      setLoadingStats(false);
+    } catch (error) {
+      console.error('Initialization error:', error);
+      setStatsError('Failed to initialize dashboard');
+      setLoadingStats(false);
+    }
+
+    return () => {
+      unsubscribeCallbacks.forEach(unsubscribe => unsubscribe());
+    };
+  }, [user?.uid, profile?.views]);
 
   return (
     <div className="text-accent">
@@ -28,15 +125,30 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {stats.map((stat) => (
-          <div key={stat.name} className="bg-white dark:bg-base-dark rounded-lg p-4 shadow-sm border border-accent/10">
-            <h3 className="text-sm font-medium">{stat.name}</h3>
-            <p className="text-2xl font-semibold mt-1">{stat.value}</p>
-            <p className="text-sm mt-1">{stat.change}</p>
-          </div>
-        ))}
+      {/* Stats Section */}
+      {statsError && (
+        <Alert variant="error" className="mb-4">
+          {statsError}
+        </Alert>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {loadingStats ? (
+          <>
+            <Skeleton className="h-24 rounded-lg" />
+            <Skeleton className="h-24 rounded-lg" />
+          </>
+        ) : (
+          stats.map((stat) => (
+            <div key={stat.name} className="bg-white dark:bg-base-dark rounded-lg p-4 shadow-sm border border-accent/10">
+              <h3 className="text-sm font-medium">{stat.name}</h3>
+              <p className="text-2xl font-semibold mt-1">{stat.value}</p>
+              <p className={`text-sm mt-1 ${stat.changeType === 'positive' ? 'text-green-500' : 'text-red-500'}`}>
+                {stat.change}
+              </p>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Quick Actions */}
@@ -49,6 +161,16 @@ export default function Dashboard() {
             <span>👤</span>
           </div>
           <span>Edit Profile</span>
+        </Link>
+
+        <Link
+          to="/dashboard/portfolio"
+          className="bg-white dark:bg-base-dark p-4 rounded-lg border border-accent/10 hover:border-primary/30 transition flex items-center gap-3"
+        >
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <span>📁</span>
+          </div>
+          <span>My Portfolio</span>
         </Link>
 
         <Link
@@ -70,41 +192,39 @@ export default function Dashboard() {
           </div>
           <span>Settings</span>
         </Link>
-
-        <Link
-          to="/templates"
-          className="bg-white dark:bg-base-dark p-4 rounded-lg border border-accent/10 hover:border-primary/30 transition flex items-center gap-3"
-        >
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <span>🎨</span>
-          </div>
-          <span>Change Template</span>
-        </Link>
       </div>
 
       {/* Recent Activity */}
       <div className="bg-white dark:bg-base-dark rounded-xl shadow-sm p-6 border border-accent/10">
         <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
-        <div className="space-y-4">
-          <div className="flex items-start gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition">
-            <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-              ✓
-            </div>
-            <div>
-              <p className="font-medium">Profile updated</p>
-              <p className="text-sm">2 hours ago</p>
-            </div>
+        
+        {loadingActivity ? (
+          <div className="space-y-4">
+            <Skeleton className="h-16 rounded-lg" />
+            <Skeleton className="h-16 rounded-lg" />
           </div>
-          <div className="flex items-start gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition">
-            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              ✉️
-            </div>
-            <div>
-              <p className="font-medium">New connection request</p>
-              <p className="text-sm">1 day ago</p>
-            </div>
+        ) : activity.length > 0 ? (
+          <div className="space-y-4">
+            {activity.map((item) => (
+              <div key={item.id} className="flex items-start gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  item.type === 'project' ? 'bg-purple-100 dark:bg-purple-900/30' :
+                  'bg-gray-100 dark:bg-gray-800'
+                }`}>
+                  {item.type === 'project' ? '🛠️' : '•'}
+                </div>
+                <div>
+                  <p className="font-medium">{item.message}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {item.timestamp?.toLocaleString() || 'Recently'}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+        ) : (
+          <p className="text-gray-500 dark:text-gray-400">No recent activity</p>
+        )}
       </div>
     </div>
   );

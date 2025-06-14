@@ -157,3 +157,20 @@ export const deleteUserData = async (userId) => {
 
   await batch.commit();
 };
+
+export const saveTemplateSelection = async (userId, templateId) => {
+  if (!userId || !templateId) {
+    throw new Error("Missing required parameters");
+  }
+
+  try {
+    await updateDoc(doc(db, "profiles", userId), {
+      selectedTemplate: templateId,
+      lastUpdated: serverTimestamp()
+    });
+    return { success: true, templateId };
+  } catch (error) {
+    console.error("Template selection failed:", error);
+    throw new Error("Failed to save template selection");
+  }
+};

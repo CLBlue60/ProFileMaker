@@ -1,56 +1,100 @@
 rules_version = '2';
 service cloud.firestore {
+  function isAdmin() {
+    return request.auth.token.admin == true;
+  }
+  
+  function isOwner(userId) {
+    return request.auth != null && request.auth.uid == userId;
+  }
+  
+  function isValidProject() {
+    return request.resource.data.title is string
+      && request.resource.data.title.size() >= 2
+      && request.resource.data.description is string
+      && request.resource.data.userId == request.auth.uid;
+  }
+  
+  function isValidActivity() {
+    return request.resource.data.userId == request.auth.uid
+      && request.resource.data.type is string
+      && request.resource.data.message is string;
+  }
+
   match /databases/{database}/documents {
-    // User documents (for authentication data)
+    // Stripe customer and billing rules
+    match /customers/{uid} {
+      allow read: if request.auth.uid == uid;
+
+      match /checkout_sessions/{id} {
+        allow read, write: if request.auth.uid == uid;
+      }
+      match /subscriptions/{id} {
+        allow read: if request.auth.uid == uid;
+      }
+      match /payments/{id} {
+        allow read: if request.auth.uid == uid;
+      }
+    }
+
+    match /products/{id} {
+      allow read: if true;
+
+      match /prices/{id} {
+        allow read: if true;
+      }
+
+      match /tax_rates/{id} {
+        allow read: if true;
+      }
+    }
+
+    // User profiles
     match /users/{userId} {
-      allow read, write: if request.auth != null &&
-                         request.auth.uid == userId;
+      allow read, write: if isOwner(userId) || isAdmin();
     }
-
-    // Profile documents
-    match /profiles/{userId} {
-      // Public read access for published profiles only
-      allow get: if resource.data.isPublished == true ||
-                 (request.auth != null && request.auth.uid == userId);
-
-      // Only owner can create/update
-      allow create, update: if request.auth != null &&
-                            request.auth.uid == userId &&
-                            // Validate required fields
-                            request.resource.data.displayName is string &&
-                            request.resource.data.displayName.size() >= 2 &&
-                            // Domain validation if publishing
-                            (request.resource.data.isPublished == false ||
-                             (request.resource.data.domain is string &&
-                              request.resource.data.domain.matches('^[a-z0-9-]{3,20}$')));
+    
+    // Projects collection
+    match /projects/{projectId} {
+      allow read: if true;
+      allow create: if isOwner(request.resource.data.userId) && isValidProject();
+      allow update, delete: if isOwner(resource.data.userId) || isAdmin();
     }
-
-    // Domain reservations
-    match /domains/{domain} {
-      allow get: if true;  // Public read for availability checks
-      allow create: if request.auth != null &&
-                     domain.matches('^[a-z0-9-]{3,20}$') &&
-                     // Reserved domains protection
-                     !(['www', 'app', 'admin', 'api'].hasAny([domain.toLowerCase()])) &&
-                     // Ensure the creator owns the profile they're associating
-                     get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.isPublished == false;
-      allow update, delete: if false;
+    
+    // Connections
+    match /connections/{connectionId} {
+      allow read: if isOwner(resource.data.userId) || 
+                   isOwner(resource.data.connectedUserId);
+      allow create: if isOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.connectedUserId); // For accepting requests
+      allow delete: if isOwner(resource.data.userId) || 
+                     isOwner(resource.data.connectedUserId);
     }
-
-    // Portfolio items
+    
+    // Activity feed
+    match /activity/{activityId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isOwner(request.resource.data.userId) && isValidActivity();
+      allow delete: if isAdmin();
+    }
+    
+    // Portfolio items 
     match /portfolios/{userId}/{itemId} {
-      allow read: if true;  // Public read
-      allow create, update, delete: if request.auth != null &&
-                                   request.auth.uid == userId &&
-                                   // Validate required fields
+      allow read: if true;
+      allow create, update, delete: if isOwner(userId) &&
                                    request.resource.data.title is string &&
                                    request.resource.data.title.size() >= 2;
     }
-
-    // Audit trail (optional)
-    match /audit/{userId}/{logId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null;
+    
+    // Existing profile rules
+    match /profiles/{userId} {
+      allow get: if resource.data.isPublished == true || isOwner(userId);
+      allow create, update: if isOwner(userId) &&
+                            request.resource.data.displayName is string &&
+                            request.resource.data.displayName.size() >= 2 &&
+                            (request.resource.data.isPublished == false ||
+                             (request.resource.data.domain is string &&
+                              request.resource.data.domain.matches('^[a-z0-9-]{3,20}$')));
     }
   }
 }

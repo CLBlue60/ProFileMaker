@@ -12,6 +12,7 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   const navigation = [
+    { name: 'Portfolio', href: '/dashboard/portfolio' },
     { name: 'Features', href: '/features' },
     { name: 'Templates', href: '/templates' },
     { name: 'Pricing', href: '/pricing' },

@@ -56,7 +56,6 @@ const tapScale = {
   scale: 0.98
 };
 
-// Helper to dynamically load Google Fonts
 function useGoogleFont(fontFamily) {
   useEffect(() => {
     if (!fontFamily) return;
@@ -78,7 +77,6 @@ function useGoogleFont(fontFamily) {
     link.href = `https://fonts.googleapis.com/css2?family=${fontName}&display=swap`;
     document.head.appendChild(link);
     return () => {
-      // Optionally remove font link on unmount
     };
   }, [fontFamily]);
 }

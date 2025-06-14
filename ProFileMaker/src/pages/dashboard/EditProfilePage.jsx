@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../hooks/UseAuth';
 import { updateProfile } from 'firebase/auth';
 import { auth } from '../../firebase/firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 
 export default function EditProfilePage() {
   const { user } = useAuth();
@@ -29,11 +30,19 @@ export default function EditProfilePage() {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
 
-      <form onSubmit={handleSubmit} className="max-w-2xl">
+      <form
+        onSubmit={async (e) => {
+          await handleSubmit(e);
+          navigate('/dashboard');
+        }}
+        className="max-w-2xl"
+      >
         <div className="space-y-4">
           <div>
             <label className="block mb-1">Display Name</label>
@@ -78,6 +87,7 @@ export default function EditProfilePage() {
             <button
               type="button"
               className="px-4 py-2 border rounded"
+              onClick={() => navigate('/dashboard')}
             >
               Cancel
             </button>

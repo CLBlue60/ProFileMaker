@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/UseAuth';
 import { publishProfile } from '../../firestoreHelpers';
 import DomainInput from '../../components/profile/DomainInput';
 
@@ -21,7 +21,7 @@ export default function PublishProfile() {
     try {
       const result = await publishProfile(user.uid, domain);
       if (result.success) {
-        navigate(`/profile/${domain}`); // Redirect to the new profile
+        navigate(`/profile/${domain}`); 
       }
     } catch (err) {
       setError(err.message);

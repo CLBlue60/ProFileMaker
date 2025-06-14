@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/UseAuth';
-import LoadingSpinner from '../components/LoadingSpinner';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 export default function AuthGuard({ children }) {
   const { user, loading } = useAuth();
