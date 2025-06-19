@@ -164,10 +164,15 @@ export const saveTemplateSelection = async (userId, templateId) => {
   }
 
   try {
-    await updateDoc(doc(db, "profiles", userId), {
-      selectedTemplate: templateId,
-      lastUpdated: serverTimestamp()
-    });
+    await setDoc(
+      doc(db, "profiles", userId),
+      {
+        selectedTemplate: templateId,
+        lastUpdated: serverTimestamp(),
+        userId, // <-- ensure userId is set for rule checks
+      },
+      { merge: true }
+    );
     return { success: true, templateId };
   } catch (error) {
     console.error("Template selection failed:", error);

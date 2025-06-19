@@ -1,36 +1,38 @@
-import { useState } from 'react';
-import { useAuth } from '../../hooks/UseAuth';
-import { updateProfile } from 'firebase/auth';
-import { auth } from '../../firebase/firebaseConfig';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useAuth } from "../../hooks/UseAuth";
+import UserAvatar from "../../components/UserAvatar";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 export default function EditProfilePage() {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     displayName: user?.displayName || '',
     bio: user?.bio || '',
-    location: user?.location || ''
+    location: user?.location || '',
+    avatarUrl: user?.avatarUrl || ''
   });
+  const [uploading, setUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSaving(true);
+  const handleAvatarChange = async ({ file, url }) => {
+    const db = getFirestore();
+    const storage = getStorage();
 
-    try {
-      await updateProfile(auth.currentUser, {
-        displayName: formData.displayName
-      });
-      alert('Profile updated successfully!');
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Failed to update profile');
-    } finally {
-      setIsSaving(false);
+    if (file) {
+      setUploading(true);
+      // Upload to profile_pictures/{userId}/...
+      const storageRef = ref(storage, `profile_pictures/${user.uid}/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      await setDoc(doc(db, "profiles", user.uid), { avatarUrl: downloadURL }, { merge: true });
+      setFormData((prev) => ({ ...prev, avatarUrl: downloadURL }));
+      setUploading(false);
+    } else if (url) {
+      await setDoc(doc(db, "profiles", user.uid), { avatarUrl: url }, { merge: true });
+      setFormData((prev) => ({ ...prev, avatarUrl: url }));
     }
   };
-
-  const navigate = useNavigate();
 
   return (
     <div>
@@ -44,35 +46,56 @@ export default function EditProfilePage() {
         className="max-w-2xl"
       >
         <div className="space-y-4">
-          <div>
-            <label className="block mb-1">Display Name</label>
+          <div className="mb-4">
+            <label htmlFor="displayName" className="block font-medium mb-1">
+              Display Name
+            </label>
             <input
+              id="displayName"
+              name="displayName"
               type="text"
-              value={formData.displayName}
-              onChange={(e) => setFormData({...formData, displayName: e.target.value})}
               className="w-full p-2 border rounded"
+              value={formData.displayName}
+              onChange={e => setFormData({ ...formData, displayName: e.target.value })}
               required
             />
           </div>
 
-          <div>
-            <label className="block mb-1">Bio</label>
+          <div className="mb-4">
+            <label htmlFor="bio" className="block font-medium mb-1">
+              Bio
+            </label>
             <textarea
-              value={formData.bio}
-              onChange={(e) => setFormData({...formData, bio: e.target.value})}
+              id="bio"
+              name="bio"
               className="w-full p-2 border rounded"
+              value={formData.bio}
+              onChange={e => setFormData({ ...formData, bio: e.target.value })}
               rows="3"
             />
           </div>
 
-          <div>
-            <label className="block mb-1">Location</label>
+          <div className="mb-4">
+            <label htmlFor="location" className="block font-medium mb-1">
+              Location
+            </label>
             <input
+              id="location"
+              name="location"
               type="text"
-              value={formData.location}
-              onChange={(e) => setFormData({...formData, location: e.target.value})}
               className="w-full p-2 border rounded"
+              value={formData.location}
+              onChange={e => setFormData({ ...formData, location: e.target.value })}
             />
+          </div>
+
+          <div>
+            <label className="block mb-1">Avatar</label>
+            <UserAvatar
+              avatarUrl={formData.avatarUrl}
+              onChange={handleAvatarChange}
+            />
+            {uploading && <div>Uploading...</div>}
           </div>
 
           <div className="flex gap-3 pt-4">

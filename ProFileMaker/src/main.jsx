@@ -19,6 +19,8 @@ import Pricing from './pages/Pricing';
 import ProfileBuilder from './pages/profile-setup/ProfileBuilder';
 import Inquiry from './pages/Inquiry';
 import Upgrade from './pages/Upgrade';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 // Dashboard Pages
 import Dashboard from './pages/Dashboard';
@@ -49,6 +51,8 @@ const router = createBrowserRouter([
       { path: 'profile-builder', element: <ProfileBuilder /> },
       { path: 'inquiry', element: <Inquiry /> },
       { path: 'upgrade', element: <Upgrade /> },
+      { path: 'terms-of-service', element: <TermsOfService /> },
+      { path: 'privacy-policy', element: <PrivacyPolicy /> },
     ]
   },
   {

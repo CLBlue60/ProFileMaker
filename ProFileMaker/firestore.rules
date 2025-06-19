@@ -89,12 +89,31 @@ service cloud.firestore {
     // Existing profile rules
     match /profiles/{userId} {
       allow get: if resource.data.isPublished == true || isOwner(userId);
-      allow create, update: if isOwner(userId) &&
-                            request.resource.data.displayName is string &&
-                            request.resource.data.displayName.size() >= 2 &&
-                            (request.resource.data.isPublished == false ||
-                             (request.resource.data.domain is string &&
-                              request.resource.data.domain.matches('^[a-z0-9-]{3,20}$')));
+
+      // Allow updates that only set selectedTemplate (and possibly lastUpdated/userId)
+      allow create, update: if isOwner(userId) && (
+        (
+          // Allow if only updating selectedTemplate, lastUpdated, or userId
+          request.resource.data.keys().hasOnly(['selectedTemplate', 'lastUpdated', 'userId'])
+        ) ||
+        (
+          // Otherwise, require displayName for full profile updates
+          request.resource.data.displayName is string &&
+          request.resource.data.displayName.size() >= 2 &&
+          (
+            request.resource.data.isPublished == false ||
+            (
+              request.resource.data.domain is string &&
+              request.resource.data.domain.matches('^[a-z0-9-]{3,20}$')
+            )
+          )
+        )
+      );
+    }
+    
+    // Allow users to read and write their own profile document
+    match /profiles/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
   }
 }

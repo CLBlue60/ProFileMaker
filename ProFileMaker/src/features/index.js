@@ -2,7 +2,6 @@ import { lazy } from "react";
 
 // Helper to convert array to object for colors
 function colorArrayToObject(arr, style) {
-  // You can customize text color logic per style if you want
   let text = "#1A1A1A";
   if (
     style === "neon" ||
@@ -118,80 +117,93 @@ export const TEMPLATE_METADATA = {
     preview:
       "https://placehold.co/600x400/236B4E/FFD700/png?text=Freelancer+Focus",
   },
-  "neon-dream": {
-    name: "Neon Dream",
-    category: "Futuristic Neon",
+  "quantum-flux": {
+    name: "Quantum Flux",
+    category: "Futuristic Quantum",
+    advanced: true,
+    style: "quantum",
+    fontFamily: "'Rajdhani', sans-serif",
+    preview: "https://placehold.co/600x400/0A0E17/7B2CBF/png?text=Quantum+Flux",
+    colors: {
+      primary: "#7B2CBF",
+      background: "#0A0E17",
+      text: "#E8F1F2",
+      accent: "#00BBF9",
+    },
+    effect: "quantum-glow",
+  },
+  "neon-glow": {
+    name: "Neon Glow",
+    category: "Futuristic",
     advanced: true,
     style: "neon",
     fontFamily: "'Orbitron', sans-serif",
-    preview: "https://placehold.co/600x400/18122B/39FF14/png?text=Neon+Dream",
+    preview: "https://placehold.co/600x400/1a1a2e/00fff7/png?text=Neon+Glow",
     colors: {
-      primary: "#39FF14",
-      background: "#18122B",
-      text: "#F8F8F8",
-      accent: "#FF00C8",
+      primary: "#00fff7",
+      background: "#1a1a2e",
+      text: "#aefeff",
+      accent: "#ff00ea",
     },
     effect: "glow",
   },
-  "retro-wave": {
-    name: "Retro Wave",
-    category: "80s Synthwave",
+  "synthwave-retro": {
+    name: "Synthwave Retro",
+    category: "Retro",
     advanced: true,
     style: "retro",
     fontFamily: "'Press Start 2P', cursive",
-    preview: "https://placehold.co/600x400/2D033B/FF6EC7/png?text=Retro+Wave",
+    preview: "https://placehold.co/600x400/ff5e62/ffb347/png?text=Synthwave+Retro",
     colors: {
-      primary: "#FF6EC7",
-      background: "#2D033B",
-      text: "#F7F7F7",
-      accent: "#FFD700",
+      primary: "#ff5e62",
+      background: "#232946",
+      text: "#ffe066",
+      accent: "#ffb347",
     },
     effect: "gradient-stripes",
   },
-  "cyber-noir": {
-    name: "Cyber Noir",
-    category: "Tech Noir",
+  "tech-noir-cyber": {
+    name: "Tech Noir Cyber",
+    category: "Cyberpunk",
     advanced: true,
     style: "cyber",
     fontFamily: "'Share Tech Mono', monospace",
-    preview: "https://placehold.co/600x400/000000/FF00C8/png?text=Cyber+Noir",
+    preview: "https://placehold.co/600x400/000000/00ff41/png?text=Tech+Noir+Cyber",
     colors: {
-      primary: "#FF00C8", 
+      primary: "#00ff41",
       background: "#000000",
-      text: "#FFFFFF",
-      accent: "#C0C0C0",
+      text: "#00ff41",
+      accent: "#ff00ea",
     },
     effect: "matrix-rain",
   },
-  "art-deco-luxe": {
-    name: "Art Deco Luxe",
-    category: "Gatsby Glam",
+  "art-deco": {
+    name: "Art Deco",
+    category: "Classic",
     advanced: true,
     style: "deco",
     fontFamily: "'Cinzel Decorative', serif",
-    preview:
-      "https://placehold.co/600x400/22223B/FFD700/png?text=Art+Deco+Luxe",
+    preview: "https://placehold.co/600x400/f5f5f5/d4af37/png?text=Art+Deco",
     colors: {
-      primary: "#FFD700",
-      background: "#22223B",
-      text: "#F2E9E4",
-      accent: "#BFC0C0",
+      primary: "#d4af37",
+      background: "#f5f5f5",
+      text: "#333333",
+      accent: "#bfa14a",
     },
     effect: "gold-lines",
   },
-  "minimal-brutalism": {
-    name: "Minimal Brutalism",
-    category: "Bold Minimalism",
+  "brutalism": {
+    name: "Brutalism",
+    category: "Bold",
     advanced: true,
     style: "brutal",
     fontFamily: "'Bebas Neue', sans-serif",
-    preview:
-      "https://placehold.co/600x400/FFFFFF/1A1A1A/png?text=Minimal+Brutalism",
+    preview: "https://placehold.co/600x400/ffffff/000000/png?text=Brutalism",
     colors: {
-      primary: "#1A1A1A",
-      background: "#FFFFFF",
-      text: "#1A1A1A",
-      accent: "#FF6F61",
+      primary: "#000000",
+      background: "#ffffff",
+      text: "#000000",
+      accent: "#ffb347",
     },
     effect: "block-shadow",
   },
@@ -215,6 +227,12 @@ const templateComponents = {
   "nonprofit-impact": lazy(() => import("./templates/NonprofitImpact")),
   "event-organizer": lazy(() => import("./templates/EventOrganizer")),
   "freelancer-focus": lazy(() => import("./templates/FreelancerFocus")),
+  "quantum-flux": lazy(() => import("./templates/QuantumFlux")),
+  "neon-glow": lazy(() => import("./templates/NeonGlow")),
+  "synthwave-retro": lazy(() => import("./templates/SynthwaveRetro")),
+  "tech-noir-cyber": lazy(() => import("./templates/TechNoirCyber")),
+  "art-deco": lazy(() => import("./templates/ArtDeco")),
+  brutalism: lazy(() => import("./templates/Brutalism")),
 };
 
 // Public API

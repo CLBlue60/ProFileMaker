@@ -23,7 +23,7 @@ export default function TemplateDetail() {
     setLoading(true);
     try {
       await saveTemplateSelection(user.uid, templateId);
-      navigate('/profile-setup/publish');
+      navigate('/dashboard'); 
     } catch (error) {
       console.error("Template selection failed:", error);
     } finally {

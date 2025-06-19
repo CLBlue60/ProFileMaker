@@ -1,13 +1,6 @@
-import { useState, useEffect } from 'react';
-// eslint-disable-next-line no-unused-vars
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  UserIcon,
-  BriefcaseIcon,
-  EnvelopeIcon,
-  CodeBracketIcon,
-  ArrowRightIcon
-} from '@heroicons/react/24/outline';
+import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { UserIcon, BriefcaseIcon, CodeBracketIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 
 const container = {
   hidden: { opacity: 0 },
@@ -19,41 +12,73 @@ const container = {
     }
   }
 };
-
 const item = {
   hidden: { opacity: 0, y: 20 },
   show: {
     opacity: 1,
     y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 100
-    }
+    transition: { type: "spring", stiffness: 100 }
   }
 };
-
-const templateTransition = {
-  type: "spring",
-  damping: 20,
-  stiffness: 100
-};
-
-const pulse = {
-  scale: [1, 1.05, 1],
-  transition: {
-    duration: 2,
-    repeat: Infinity,
-    repeatType: "reverse"
+// Quantum Flux
+const quantumItem = {
+  hidden: { opacity: 0, y: 40, rotateX: 90 },
+  show: {
+    opacity: 1,
+    y: 0,
+    rotateX: 0,
+    transition: { type: "spring", stiffness: 120, damping: 15 }
   }
 };
-
-const hoverScale = {
-  scale: 1.03,
-  transition: { type: "spring", stiffness: 400 }
+// Neon/Glow
+const neonItem = {
+  hidden: { opacity: 0, scale: 0.8, filter: "blur(8px)" },
+  show: {
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { type: "spring", stiffness: 180, damping: 18 }
+  }
 };
-
-const tapScale = {
-  scale: 0.98
+// Synthwave/Retro
+const retroItem = {
+  hidden: { opacity: 0, x: -60, skewY: 10 },
+  show: {
+    opacity: 1,
+    x: 0,
+    skewY: 0,
+    transition: { type: "spring", stiffness: 90, damping: 12 }
+  }
+};
+// Tech Noir/Cyber
+const cyberItem = {
+  hidden: { opacity: 0, y: 60, scale: 0.7 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: "spring", stiffness: 200, damping: 20 }
+  }
+};
+// Art Deco
+const decoItem = {
+  hidden: { opacity: 0, rotate: -10, y: 30 },
+  show: {
+    opacity: 1,
+    rotate: 0,
+    y: 0,
+    transition: { type: "spring", stiffness: 110, damping: 14 }
+  }
+};
+// Brutalism
+const brutalItem = {
+  hidden: { opacity: 0, x: 50, scale: 0.9 },
+  show: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: { type: "spring", stiffness: 150, damping: 10 }
+  }
 };
 
 function useGoogleFont(fontFamily) {
@@ -65,6 +90,7 @@ function useGoogleFont(fontFamily) {
       "'Share Tech Mono', monospace": "Share+Tech+Mono",
       "'Cinzel Decorative', serif": "Cinzel+Decorative:wght@700",
       "'Bebas Neue', sans-serif": "Bebas+Neue",
+      "'Rajdhani', sans-serif": "Rajdhani:wght@400;500;700"
     };
     const fontKey = Object.keys(fontMap).find(key => fontFamily.includes(key.split(',')[0].replace(/'/g, "")));
     if (!fontKey) return;
@@ -77,117 +103,448 @@ function useGoogleFont(fontFamily) {
     link.href = `https://fonts.googleapis.com/css2?family=${fontName}&display=swap`;
     document.head.appendChild(link);
     return () => {
+      if (document.getElementById(linkId)) {
+        document.head.removeChild(document.getElementById(linkId));
+      }
     };
   }, [fontFamily]);
 }
 
-export default function ProfilePreview({ template }) {
-  const demoTemplates = [
-    {
-      name: "Modern Professional",
-      colors: {
-        primary: '#3B82F6',
-        background: '#FFFFFF',
-        text: '#1F2937',
-        accent: '#E5E7EB'
-      },
-      style: 'minimal'
-    },
-    {
-      name: "Creative Portfolio",
-      colors: {
-        primary: '#8B5CF6',
-        background: '#F5F3FF',
-        text: '#4C1D95',
-        accent: '#DDD6FE'
-      },
-      style: 'creative'
-    },
-    {
-      name: "Tech Innovator",
-      colors: {
-        primary: '#06B6D4',
-        background: '#ECFEFF',
-        text: '#164E63',
-        accent: '#A5F3FC'
-      },
-      style: 'tech'
-    }
-  ];
-
-  const templates = template ? [template] : demoTemplates;
-  const [activeTemplate, setActiveTemplate] = useState(0);
-  const currentTemplate = templates[activeTemplate];
-
-  // Font integration
-  useGoogleFont(currentTemplate.fontFamily);
-
-  // Creative effects based on style/effect
+export default function ProfilePreview({ template, project = null, showBrowseTemplates = true }) {
   let creativeStyles = {};
   let creativeHeader = {};
   let creativeBg = {};
   let creativeSkills = {};
   let creativePattern = null;
+  let animationVariants = item;
 
-  // Neon/Glow
-  if (currentTemplate.effect === "glow" || currentTemplate.style === "neon") {
+  if (template?.style === "quantum") {
     creativeStyles = {
-      boxShadow: `0 0 24px 4px ${currentTemplate.colors.primary}99, 0 0 48px 8px ${currentTemplate.colors.accent}66`,
-      border: `2px solid ${currentTemplate.colors.accent}`,
-      fontFamily: currentTemplate.fontFamily,
-      background: currentTemplate.colors.background,
-      color: currentTemplate.colors.text,
+      backgroundColor: '#0A0E17',
+      color: '#00BBF9',
+      fontFamily: "'Rajdhani', sans-serif",
+      border: `2px solid #7B2CBF`,
+      boxShadow: `0 0 20px rgba(123, 44, 191, 0.5)`,
+      position: 'relative',
+      overflow: 'hidden'
     };
     creativeHeader = {
-      textShadow: `0 0 8px ${currentTemplate.colors.primary}, 0 0 16px ${currentTemplate.colors.accent}`,
+      color: '#00BBF9',
+      textShadow: `0 0 10px #7B2CBF, 0 0 4px #00BBF9`,
+      letterSpacing: '1px'
+    };
+    creativePattern = (
+      <>
+        {/* Animated glowing grid */}
+        <svg
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
+            pointerEvents: "none",
+            opacity: 0.18,
+            filter: "blur(0.5px)"
+          }}
+          viewBox="0 0 400 400"
+          fill="none"
+        >
+          <defs>
+            <linearGradient id="gridLine" x1="0" y1="0" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#00BBF9" />
+              <stop offset="1" stopColor="#7B2CBF" />
+            </linearGradient>
+          </defs>
+          {/* Vertical lines */}
+          {[...Array(9)].map((_, i) => (
+            <line
+              key={`v${i}`}
+              x1={i * 50}
+              y1="0"
+              x2={i * 50}
+              y2="400"
+              stroke="url(#gridLine)"
+              strokeWidth="1"
+            />
+          ))}
+          {/* Horizontal lines */}
+          {[...Array(9)].map((_, i) => (
+            <line
+              key={`h${i}`}
+              x1="0"
+              y1={i * 50}
+              x2="400"
+              y2={i * 50}
+              stroke="url(#gridLine)"
+              strokeWidth="1"
+            />
+          ))}
+        </svg>
+        {/* Neon glow blobs */}
+        <div style={{
+          position: 'absolute',
+          top: '-10%',
+          left: '-10%',
+          width: '60%',
+          height: '60%',
+          background: 'radial-gradient(circle at 30% 30%, #00BBF9aa 0%, transparent 70%)',
+          zIndex: 0,
+          pointerEvents: "none",
+          filter: "blur(8px)"
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '-20%',
+          right: '-10%',
+          width: '50%',
+          height: '50%',
+          background: 'radial-gradient(circle at 70% 70%, #7B2CBF99 0%, transparent 80%)',
+          zIndex: 0,
+          pointerEvents: "none",
+          filter: "blur(12px)"
+        }} />
+      </>
+    );
+  }
+  else if (template?.effect === "glow" || template?.style === "neon") {
+    creativeStyles = {
+      backgroundColor: template.colors?.background || '#1a1a2e',
+      color: '#aefeff',
+      fontFamily: template.fontFamily,
+      border: `2px solid ${template.colors?.accent}`,
+      boxShadow: `0 0 24px 4px ${template.colors?.primary}99, 0 0 48px 8px ${template.colors?.accent}66`,
+      position: 'relative',
+      overflow: 'hidden'
+    };
+    creativeHeader = {
+      color: '#aefeff',
+      textShadow: `0 0 8px #ff00ea, 0 0 16px #ff00ea, 0 0 2px #aefeff`,
+      letterSpacing: "2px"
+    };
+    creativePattern = (
+      <>
+        {/* Animated neon rings */}
+        <svg
+          style={{
+            position: 'absolute',
+            top: '10%',
+            left: '10%',
+            width: '80%',
+            height: '80%',
+            zIndex: 0,
+            pointerEvents: "none",
+            opacity: 0.22,
+            filter: "blur(1.5px)"
+          }}
+          viewBox="0 0 400 400"
+          fill="none"
+        >
+          <circle cx="200" cy="200" r="120" stroke="#ff00ea" strokeWidth="8" />
+          <circle cx="200" cy="200" r="90" stroke="#00fff7" strokeWidth="4" />
+          <circle cx="200" cy="200" r="60" stroke="#aefeff" strokeWidth="2" />
+        </svg>
+        {/* Neon gradient overlay */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(120deg, #ff00ea33 0%, #00fff733 100%)',
+          zIndex: 0,
+          pointerEvents: "none",
+          mixBlendMode: "screen"
+        }} />
+        {/* Subtle animated glow */}
+        <div style={{
+          position: 'absolute',
+          bottom: '-15%',
+          right: '-10%',
+          width: '40%',
+          height: '40%',
+          background: 'radial-gradient(circle at 80% 80%, #ff00ea88 0%, transparent 80%)',
+          zIndex: 0,
+          pointerEvents: "none",
+          filter: "blur(10px)"
+        }} />
+      </>
+    );
+  }
+  else if (template?.effect === "gradient-stripes" || template?.style === "retro") {
+    creativeStyles = {
+      backgroundColor: template.colors?.background || '#232946',
+      color: template.colors?.text || '#ffe066',
+      fontFamily: template.fontFamily,
+      border: `2px solid ${template.colors?.accent}`,
+      boxShadow: `0 0 24px 4px ${template.colors?.primary}99, 0 0 48px 8px ${template.colors?.accent}66`,
+      position: 'relative',
+      overflow: 'hidden'
+    };
+    creativePattern = (
+      <svg
+        style={{
+          position: "absolute",
+          top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0
+        }}
+        viewBox="0 0 400 400"
+        fill="none"
+      >
+        <g opacity="0.08">
+          <rect x="40" y="40" width="320" height="320" fill={template.colors?.accent} />
+          <rect x="80" y="80" width="240" height="240" fill={template.colors?.primary} />
+        </g>
+      </svg>
+    );
+  }
+  else if (template?.effect === "matrix-rain" || template?.style === "cyber") {
+    creativeStyles = {
+      backgroundColor: template.colors?.background || '#000000',
+      color: template.colors?.text || '#00ff41',
+      fontFamily: template.fontFamily,
+      border: `2px solid ${template.colors?.accent}`,
+      boxShadow: `0 0 24px 4px ${template.colors?.primary}99, 0 0 48px 8px ${template.colors?.accent}66`,
+      position: 'relative',
+      overflow: 'hidden'
+    };
+  }
+  else if (template?.effect === "gold-lines" || template?.style === "deco") {
+    creativeStyles = {
+      backgroundColor: template.colors?.background || '#f5f5f5',
+      color: template.colors?.text || '#333333',
+      fontFamily: template.fontFamily,
+      border: `3px double ${template.colors?.primary}`,
+      boxShadow: `0 0 24px 4px ${template.colors?.primary}33`,
+      position: 'relative',
+      overflow: 'hidden'
+    };
+  }
+  else if (template?.effect === "block-shadow" || template?.style === "brutal") {
+    creativeStyles = {
+      backgroundColor: template.colors?.background || '#ffffff',
+      color: template.colors?.text || '#000000',
+      fontFamily: template.fontFamily,
+      border: `4px solid ${template.colors?.primary}`,
+      boxShadow: `12px 12px 0 0 ${template.colors?.accent}`,
+      borderRadius: "0.5rem",
+      position: 'relative',
+      overflow: 'hidden'
+    };
+  }
+  else {
+    creativeStyles = {
+      backgroundColor: template?.colors?.background || '#ffffff',
+      color: template?.colors?.text || '#333333',
+      fontFamily: template?.fontFamily || "inherit",
+      border: `1px solid ${template?.colors?.accent || '#e5e7eb'}`,
+      position: 'relative',
+      overflow: 'hidden'
+    };
+  }
+
+  // QUANTUM FLUX THEME
+  if (template?.style === "quantum") {
+    creativeHeader = {
+      color: '#7B2CBF',
+      textShadow: `0 0 10px rgba(123, 44, 191, 0.7)`,
+      letterSpacing: '1px'
+    };
+    creativeSkills = {
+      background: 'rgba(0, 187, 249, 0.2)',
+      color: '#00BBF9',
+      border: `1px solid #00BBF9`,
+      boxShadow: `0 0 8px rgba(0, 187, 249, 0.5)`
+    };
+    creativeBg = {
+      background: `radial-gradient(circle at 30% 50%, rgba(123, 44, 191, 0.15) 0%, transparent 50%)`
+    };
+    creativePattern = (
+      <>
+        {/* Animated glowing grid */}
+        <svg
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
+            pointerEvents: "none",
+            opacity: 0.18,
+            filter: "blur(0.5px)"
+          }}
+          viewBox="0 0 400 400"
+          fill="none"
+        >
+          <defs>
+            <linearGradient id="gridLine" x1="0" y1="0" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#00BBF9" />
+              <stop offset="1" stopColor="#7B2CBF" />
+            </linearGradient>
+          </defs>
+          {/* Vertical lines */}
+          {[...Array(9)].map((_, i) => (
+            <line
+              key={`v${i}`}
+              x1={i * 50}
+              y1="0"
+              x2={i * 50}
+              y2="400"
+              stroke="url(#gridLine)"
+              strokeWidth="1"
+            />
+          ))}
+          {/* Horizontal lines */}
+          {[...Array(9)].map((_, i) => (
+            <line
+              key={`h${i}`}
+              x1="0"
+              y1={i * 50}
+              x2="400"
+              y2={i * 50}
+              stroke="url(#gridLine)"
+              strokeWidth="1"
+            />
+          ))}
+        </svg>
+        {/* Neon glow blobs */}
+        <div style={{
+          position: 'absolute',
+          top: '-10%',
+          left: '-10%',
+          width: '60%',
+          height: '60%',
+          background: 'radial-gradient(circle at 30% 30%, #00BBF9aa 0%, transparent 70%)',
+          zIndex: 0,
+          pointerEvents: "none",
+          filter: "blur(8px)"
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '-20%',
+          right: '-10%',
+          width: '50%',
+          height: '50%',
+          background: 'radial-gradient(circle at 70% 70%, #7B2CBF99 0%, transparent 80%)',
+          zIndex: 0,
+          pointerEvents: "none",
+          filter: "blur(12px)"
+        }} />
+      </>
+    );
+    animationVariants = quantumItem;
+  }
+  // NEON/GLOW STYLE
+  else if (template?.effect === "glow" || template?.style === "neon") {
+    creativeHeader = {
+      textShadow: `0 0 8px ${template.colors?.primary}, 0 0 16px ${template.colors?.accent}`,
       letterSpacing: "2px"
     };
     creativeSkills = {
-      boxShadow: `0 0 8px ${currentTemplate.colors.primary}`,
-      border: `1px solid ${currentTemplate.colors.accent}`,
+      boxShadow: `0 0 8px ${template.colors?.primary}`,
+      border: `1px solid ${template.colors?.accent}`,
+      background: template.colors?.accent,
+      color: template.colors?.text
     };
     creativeBg = {
-      background: `radial-gradient(circle at 70% 30%, ${currentTemplate.colors.accent}22 0%, transparent 70%)`,
+      background: `radial-gradient(circle at 70% 30%, ${template.colors?.accent}22 0%, transparent 70%)`,
     };
+    creativePattern = (
+      <>
+        {/* Animated neon rings */}
+        <svg
+          style={{
+            position: 'absolute',
+            top: '10%',
+            left: '10%',
+            width: '80%',
+            height: '80%',
+            zIndex: 0,
+            pointerEvents: "none",
+            opacity: 0.22,
+            filter: "blur(1.5px)"
+          }}
+          viewBox="0 0 400 400"
+          fill="none"
+        >
+          <circle cx="200" cy="200" r="120" stroke="#ff00ea" strokeWidth="8" />
+          <circle cx="200" cy="200" r="90" stroke="#00fff7" strokeWidth="4" />
+          <circle cx="200" cy="200" r="60" stroke="#aefeff" strokeWidth="2" />
+        </svg>
+        {/* Neon gradient overlay */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(120deg, #ff00ea33 0%, #00fff733 100%)',
+          zIndex: 0,
+          pointerEvents: "none",
+          mixBlendMode: "screen"
+        }} />
+        {/* Subtle animated glow */}
+        <div style={{
+          position: 'absolute',
+          bottom: '-15%',
+          right: '-10%',
+          width: '40%',
+          height: '40%',
+          background: 'radial-gradient(circle at 80% 80%, #ff00ea88 0%, transparent 80%)',
+          zIndex: 0,
+          pointerEvents: "none",
+          filter: "blur(10px)"
+        }} />
+      </>
+    );
+    animationVariants = neonItem;
   }
-  // Synthwave/Retro
-  else if (currentTemplate.effect === "gradient-stripes" || currentTemplate.style === "retro") {
-    creativeStyles = {
-      background: `linear-gradient(135deg, ${currentTemplate.colors.primary} 0%, ${currentTemplate.colors.accent} 100%)`,
-      color: currentTemplate.colors.text,
-      fontFamily: currentTemplate.fontFamily,
-      border: `2px solid ${currentTemplate.colors.accent}`,
-    };
+  // SYNTHWAVE/RETRO 
+  else if (template?.effect === "gradient-stripes" || template?.style === "retro") {
     creativeHeader = {
-      textShadow: `2px 2px 0 ${currentTemplate.colors.accent}`,
+      textShadow: `2px 2px 0 ${template.colors?.accent}`,
       letterSpacing: "1px"
     };
     creativeSkills = {
-      border: `1px dashed ${currentTemplate.colors.accent}`,
+      border: `1px dashed ${template.colors?.accent}`,
+      background: template.colors?.primary,
+      color: template.colors?.text
     };
     creativeBg = {
-      background: `repeating-linear-gradient(135deg, ${currentTemplate.colors.primary}22 0 10px, transparent 10px 20px)`,
+      background: `repeating-linear-gradient(135deg, ${template.colors?.primary}22 0 10px, transparent 10px 20px)`,
     };
+    creativePattern = (
+      <svg
+        style={{
+          position: "absolute",
+          top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0
+        }}
+        viewBox="0 0 400 400"
+        fill="none"
+      >
+        <g opacity="0.08">
+          <rect x="40" y="40" width="320" height="320" fill={template.colors?.accent} />
+          <rect x="80" y="80" width="240" height="240" fill={template.colors?.primary} />
+        </g>
+      </svg>
+    );
+    animationVariants = retroItem;
   }
   // Tech Noir/Cyber
-  else if (currentTemplate.effect === "matrix-rain" || currentTemplate.style === "cyber") {
-    creativeStyles = {
-      background: currentTemplate.colors.background,
-      color: currentTemplate.colors.text,
-      fontFamily: currentTemplate.fontFamily,
-      border: `2px solid ${currentTemplate.colors.accent}`,
-    };
+  else if (template?.effect === "matrix-rain" || template?.style === "cyber") {
     creativeHeader = {
-      textShadow: `0 0 8px ${currentTemplate.colors.primary}`,
-      fontFamily: currentTemplate.fontFamily,
+      textShadow: `0 0 8px ${template.colors?.primary}`,
+      fontFamily: template.fontFamily,
       letterSpacing: "2px"
     };
     creativeSkills = {
       background: "#000",
-      color: currentTemplate.colors.primary,
-      fontFamily: currentTemplate.fontFamily,
+      color: template.colors?.primary,
+      fontFamily: template.fontFamily,
+      border: `1px solid ${template.colors?.accent}`,
+      boxShadow: `0 0 8px ${template.colors?.primary}`
     };
-    // Matrix rain SVG overlay
     creativePattern = (
       <svg
         style={{
@@ -198,34 +555,29 @@ export default function ProfilePreview({ template }) {
         fill="none"
       >
         <g opacity="0.15">
-          <text x="10" y="40" fontFamily="Share Tech Mono" fontSize="32" fill={currentTemplate.colors.primary}>101010</text>
-          <text x="200" y="200" fontFamily="Share Tech Mono" fontSize="32" fill={currentTemplate.colors.accent}>011011</text>
-          <text x="100" y="350" fontFamily="Share Tech Mono" fontSize="32" fill={currentTemplate.colors.primary}>110001</text>
+          <text x="10" y="40" fontFamily="Share Tech Mono" fontSize="32" fill={template.colors?.primary}>101010</text>
+          <text x="200" y="200" fontFamily="Share Tech Mono" fontSize="32" fill={template.colors?.accent}>011011</text>
+          <text x="100" y="350" fontFamily="Share Tech Mono" fontSize="32" fill={template.colors?.primary}>110001</text>
         </g>
       </svg>
     );
+    animationVariants = cyberItem;
   }
   // Art Deco
-  else if (currentTemplate.effect === "gold-lines" || currentTemplate.style === "deco") {
-    creativeStyles = {
-      background: currentTemplate.colors.background,
-      color: currentTemplate.colors.text,
-      fontFamily: currentTemplate.fontFamily,
-      border: `3px double ${currentTemplate.colors.primary}`,
-    };
+  else if (template?.effect === "gold-lines" || template?.style === "deco") {
     creativeHeader = {
-      fontFamily: currentTemplate.fontFamily,
+      fontFamily: template.fontFamily,
       letterSpacing: "3px",
-      color: currentTemplate.colors.primary,
-      textShadow: `0 2px 0 ${currentTemplate.colors.accent}`,
+      color: template.colors?.primary,
+      textShadow: `0 2px 0 ${template.colors?.accent}`,
     };
     creativeSkills = {
-      border: `1px solid ${currentTemplate.colors.primary}`,
-      background: currentTemplate.colors.accent,
-      color: currentTemplate.colors.text,
-      fontFamily: currentTemplate.fontFamily,
+      border: `1px solid ${template.colors?.primary}`,
+      background: template.colors?.accent,
+      color: template.colors?.text,
+      fontFamily: template.fontFamily,
+      boxShadow: `0 0 8px ${template.colors?.primary}`
     };
-    // Gold lines SVG overlay
     creativePattern = (
       <svg
         style={{
@@ -235,255 +587,168 @@ export default function ProfilePreview({ template }) {
         viewBox="0 0 400 400"
         fill="none"
       >
-        <g stroke={currentTemplate.colors.primary} strokeWidth="3" opacity="0.15">
+        <g stroke={template.colors?.primary} strokeWidth="3" opacity="0.15">
           <line x1="0" y1="0" x2="400" y2="400" />
           <line x1="400" y1="0" x2="0" y2="400" />
           <rect x="50" y="50" width="300" height="300" />
         </g>
       </svg>
     );
+    animationVariants = decoItem;
   }
   // Brutalism
-  else if (currentTemplate.effect === "block-shadow" || currentTemplate.style === "brutal") {
-    creativeStyles = {
-      background: currentTemplate.colors.background,
-      color: currentTemplate.colors.text,
-      fontFamily: currentTemplate.fontFamily,
-      border: `4px solid ${currentTemplate.colors.primary}`,
-      boxShadow: `12px 12px 0 0 ${currentTemplate.colors.accent}`,
-      borderRadius: "0.5rem"
-    };
+  else if (template?.effect === "block-shadow" || template?.style === "brutal") {
     creativeHeader = {
-      fontFamily: currentTemplate.fontFamily,
+      fontFamily: template.fontFamily,
       textTransform: "uppercase",
       letterSpacing: "2px",
-      color: currentTemplate.colors.primary,
+      color: template.colors?.primary,
     };
     creativeSkills = {
-      border: `2px solid ${currentTemplate.colors.primary}`,
-      background: currentTemplate.colors.accent,
-      color: currentTemplate.colors.text,
-      fontFamily: currentTemplate.fontFamily,
-      boxShadow: `4px 4px 0 0 ${currentTemplate.colors.primary}`,
+      border: `2px solid ${template.colors?.primary}`,
+      background: template.colors?.accent,
+      color: template.colors?.text,
+      fontFamily: template.fontFamily,
+      boxShadow: `4px 4px 0 0 ${template.colors?.primary}`,
     };
+    creativePattern = (
+      <div style={{
+        position: 'absolute',
+        top: 0, left: 0, width: '100%', height: '100%',
+        background: `repeating-linear-gradient(135deg, ${template.colors?.accent}22 0 10px, transparent 10px 20px)`,
+        zIndex: 0
+      }} />
+    );
+    animationVariants = brutalItem;
   }
-  // Default
-  else {
-    creativeStyles = {
-      background: currentTemplate.colors.background,
-      color: currentTemplate.colors.text,
-      fontFamily: currentTemplate.fontFamily || "inherit",
-      border: `1px solid ${currentTemplate.colors.accent}`,
-    };
-  }
+
+  useGoogleFont(creativeStyles.fontFamily);
+
+  // Data selection logic
+  const name = project?.title ?? "Domineke Nelson";
+  const role = project?.role ?? "Senior Product Designer";
+  const about = project?.about ?? "Creating user-centered digital experiences with beautiful interfaces.";
+  const description = project?.description ?? "I love building beautiful, functional products that delight users and drive business results.";
+  const experience = Array.isArray(project?.experience)
+    ? project.experience
+    : [
+        { title: "Lead Product Designer", company: "TechStart Inc.", period: "2020-Present" },
+        { title: "UI/UX Designer", company: "Adobe", period: "2017-2020" }
+      ];
+  const skills = Array.isArray(project?.tags)
+    ? project.tags
+    : ['Figma', 'Sketch', 'Adobe XD', 'Prototyping', 'User Research'];
+  const contact = Array.isArray(project?.contact)
+    ? project.contact
+    : ["DNelsohn@example.com", "linkedin.com/in/D'Nelson"];
+  const imageUrl = project?.avatarUrl || "";
 
   return (
     <motion.div
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: "-100px" }}
-      variants={container}
-      className="mt-16 md:mt-24 mx-auto max-w-4xl px-4"
+      className="rounded-xl shadow-lg p-8 mb-8 border relative overflow-hidden"
       style={creativeStyles}
+      variants={container}
+      initial="hidden"
+      animate="show"
     >
       {creativePattern}
-      {!template && (
-        <motion.div className="flex flex-wrap gap-2 mb-6 justify-center">
-          {templates.map((template, index) => (
-            <motion.button
-              key={index}
-              onClick={() => setActiveTemplate(index)}
-              className={`px-4 py-2 rounded-full text-sm font-medium ${
-                activeTemplate === index
-                  ? 'text-white shadow-md'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
-              }`}
-              style={activeTemplate === index ? {
-                backgroundColor: currentTemplate.colors.primary
-              } : {}}
-              variants={item}
-              whileHover={hoverScale}
-              whileTap={tapScale}
-              animate={{
-                scale: activeTemplate === index ? [1, 1.1, 1] : 1
-              }}
-              transition={{
-                scale: { duration: 0.3 }
-              }}
+      <div className="flex flex-col md:flex-row items-center gap-8" style={{ position: "relative", zIndex: 1 }}>
+        <div className="flex-shrink-0">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={name}
+              className="w-32 h-32 rounded-full object-cover border-4"
+              style={{ borderColor: template.colors?.accent }}
+            />
+          ) : (
+            <div
+              className="w-32 h-32 rounded-full flex items-center justify-center bg-gray-200"
+              style={{ background: template.colors?.accent }}
             >
-              {template.name}
-            </motion.button>
-          ))}
+              <UserIcon className="w-16 h-16 text-white" />
+            </div>
+          )}
+        </div>
+        <div>
+          <motion.h2
+            className="text-3xl font-bold mb-1"
+            style={creativeHeader}
+            variants={animationVariants}
+          >
+            {name}
+          </motion.h2>
+          <motion.p className="text-lg mb-2" style={{ color: template.colors?.accent }} variants={animationVariants}>
+            {role}
+          </motion.p>
+          <motion.p className="mb-2" variants={animationVariants}>{description}</motion.p>
+          <motion.p className="mb-2" variants={animationVariants}>{about}</motion.p>
+        </div>
+      </div>
+      <div className="grid md:grid-cols-2 gap-8 mt-8" style={{ position: "relative", zIndex: 1 }}>
+        <motion.div className="space-y-6">
+          <motion.div className="space-y-2" variants={animationVariants}>
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              <BriefcaseIcon className="w-5 h-5" />
+              Experience
+            </h3>
+            <div className="space-y-4">
+              {experience.length > 0 ? experience.map((exp, idx) => (
+                <div key={idx}>
+                  <h4 className="font-medium">{exp.title}</h4>
+                  <p className="text-sm opacity-70">{exp.company} • {exp.period}</p>
+                </div>
+              )) : <p className="text-gray-500">No experience listed.</p>}
+            </div>
+          </motion.div>
         </motion.div>
+        <div className="space-y-6">
+          <motion.div className="space-y-2" variants={animationVariants}>
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              <CodeBracketIcon className="w-5 h-5" />
+              Skills
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {skills.length > 0 ? skills.map((skill, idx) => (
+                <motion.span
+                  key={idx}
+                  className="px-3 py-1 rounded-full text-sm"
+                  style={creativeSkills}
+                  whileHover={{ scale: 1.05 }}
+                  variants={animationVariants}
+                >
+                  {skill}
+                </motion.span>
+              )) : <span className="text-gray-500">No skills listed.</span>}
+            </div>
+          </motion.div>
+          <motion.div className="space-y-2" variants={animationVariants}>
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              <EnvelopeIcon className="w-5 h-5" />
+              Contact
+            </h3>
+            <div className="space-y-1">
+              {contact.length > 0 ? contact.map((c, idx) => (
+                <p key={idx}>{c}</p>
+              )) : <span className="text-gray-500">No contact info.</span>}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+      {showBrowseTemplates && (
+        <div className="mt-8 flex justify-center" style={{ position: "relative", zIndex: 1 }}>
+          <a
+            href="/templates"
+            className="px-6 py-2 rounded-md font-medium hover:bg-accent/90 transition"
+            style={{
+              backgroundColor: template.colors?.accent,
+              color: template.colors?.text,
+            }}
+          >
+            Browse All Templates
+          </a>
+        </div>
       )}
-
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTemplate}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{
-            opacity: 1,
-            y: 0,
-            transition: templateTransition
-          }}
-          exit={{
-            opacity: 0,
-            y: -20,
-            transition: { duration: 0.2 }
-          }}
-          className="relative rounded-2xl overflow-hidden shadow-2xl"
-          style={{
-            ...creativeBg,
-            border: "none",
-            zIndex: 1
-          }}
-          whileHover={{
-            boxShadow: `0 20px 25px -5px ${currentTemplate.colors.primary}20`
-          }}
-        >
-          <motion.div
-            key={activeTemplate + '-header'}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.3 }}
-            className="p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start border-b"
-            style={{ borderColor: currentTemplate.colors.accent, ...creativeHeader }}
-            variants={item}
-          >
-            <motion.div
-              className="w-20 h-20 rounded-full flex items-center justify-center shadow-sm"
-              style={{ backgroundColor: currentTemplate.colors.primary, ...creativeHeader }}
-              animate={pulse}
-            >
-              <UserIcon className="w-8 h-8 text-white" />
-            </motion.div>
-            <div>
-              <motion.h2
-                className="text-2xl md:text-3xl font-bold mb-1"
-                style={{ color: currentTemplate.colors.primary, ...creativeHeader }}
-                initial={{ x: -10 }}
-                animate={{ x: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                Domineke Nelson
-              </motion.h2>
-              <motion.p
-                className="text-lg mb-3"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                Senior Product Designer
-              </motion.p>
-              <motion.p
-                className="opacity-80"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.8 }}
-                transition={{ delay: 0.4 }}
-              >
-                Creating user-centered digital experiences with beautiful interfaces.
-              </motion.p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-8"
-            variants={container}
-            initial="hidden"
-            animate="show"
-          >
-            <div className="md:col-span-2 space-y-6">
-              <motion.div className="space-y-2" variants={item}>
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <UserIcon className="w-5 h-5" />
-                  About
-                </h3>
-                <p>
-                  Passionate designer with 8+ years of experience at companies like
-                  Adobe and Airbnb. Specializing in design systems and prototypes.
-                </p>
-              </motion.div>
-
-              <motion.div className="space-y-4" variants={item}>
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <BriefcaseIcon className="w-5 h-5" />
-                  Experience
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium">Lead Product Designer</h4>
-                    <p className="text-sm opacity-70">TechStart Inc. • 2020-Present</p>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">UI/UX Designer</h4>
-                    <p className="text-sm opacity-70">Adobe • 2017-2020</p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            <div className="space-y-6">
-              <motion.div className="space-y-2" variants={item}>
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <CodeBracketIcon className="w-5 h-5" />
-                  Skills
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {['Figma', 'Sketch', 'Adobe XD', 'Prototyping', 'User Research'].map((skill) => (
-                    <motion.span
-                      key={skill}
-                      className="px-3 py-1 rounded-full text-sm"
-                      style={{
-                        backgroundColor: currentTemplate.colors.accent,
-                        color: currentTemplate.colors.text,
-                        ...creativeSkills
-                      }}
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      {skill}
-                    </motion.span>
-                  ))}
-                </div>
-              </motion.div>
-
-              <motion.div className="space-y-2" variants={item}>
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <EnvelopeIcon className="w-5 h-5" />
-                  Contact
-                </h3>
-                <div className="space-y-1">
-                  <p>DNelsohn@example.com</p>
-                  <p>linkedin.com/in/D'Nelson</p>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
-
-      <motion.div
-        className="mt-8 text-center"
-        variants={item}
-      >
-        <motion.a
-          href="/templates"
-          className="inline-flex items-center px-6 py-3 rounded-md font-medium gap-2"
-          style={{
-            backgroundColor: currentTemplate.colors.primary,
-            color: 'white',
-            fontFamily: currentTemplate.fontFamily
-          }}
-          whileHover={{
-            scale: 1.05,
-            boxShadow: `0 5px 15px ${currentTemplate.colors.primary}80`
-          }}
-          whileTap={tapScale}
-        >
-          Browse All Templates
-          <ArrowRightIcon className="w-4 h-4" />
-        </motion.a>
-      </motion.div>
     </motion.div>
   );
 }

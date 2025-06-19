@@ -1,21 +1,48 @@
-import { useAuth } from '../hooks/UseAuth';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, addDoc, onSnapshot } from 'firebase/firestore';
 
 export default function Upgrade() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  // Placeholder for Stripe checkout logic
   const handleUpgrade = async () => {
     setLoading(true);
-    // TODO: Integrate Stripe checkout session creation here
-    setTimeout(() => {
+    const auth = getAuth();
+    const db = getFirestore();
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert('Please log in to upgrade.');
       setLoading(false);
-      alert('Stripe integration coming soon!');
-      navigate('/dashboard');
-    }, 1500);
+      return;
+    }
+
+    try {
+      
+      const checkoutSessionsRef = collection(db, 'customers', user.uid, 'checkout_sessions');
+      const docRef = await addDoc(checkoutSessionsRef, {
+        price: 'price_1RZNSNRoaVjKBvKRffgtC31c', 
+        mode: 'payment',
+        success_url: window.location.origin + '/dashboard?payment=success',
+        cancel_url: window.location.origin + '/upgrade?payment=cancel',
+      });
+
+      const unsubscribe = onSnapshot(docRef, (snap) => {
+        const data = snap.data();
+        if (data?.url) {
+          window.location.assign(data.url);
+          unsubscribe();
+        }
+        if (data?.error) {
+          alert('Stripe error: ' + data.error.message);
+          setLoading(false);
+          unsubscribe();
+        }
+      });
+    } catch (e) {
+      alert('Error creating checkout session: ' + e.message);
+      setLoading(false);
+    }
   };
 
   return (
@@ -32,16 +59,11 @@ export default function Upgrade() {
           <div className="text-accent/80 mb-6">One-time payment</div>
           <button
             onClick={handleUpgrade}
-            disabled={loading || !user}
+            disabled={loading}
             className="w-full py-3 px-6 rounded-md bg-gradient-to-r from-primary to-accent text-white font-semibold text-lg hover:shadow-lg transition disabled:opacity-60"
           >
             {loading ? 'Redirecting...' : 'Upgrade with Stripe'}
           </button>
-          {!user && (
-            <p className="mt-4 text-red-500 text-center">
-              Please <a href="/login" className="underline text-accent">log in</a> to upgrade your account.
-            </p>
-          )}
         </div>
         <div className="mt-8 text-center text-sm text-text/60">
           Secure payment powered by Stripe.
