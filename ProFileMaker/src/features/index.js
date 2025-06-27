@@ -24,6 +24,7 @@ export const TEMPLATE_METADATA = {
     name: "Elegant Harmony",
     category: "Timeless & Versatile",
     colors: colorArrayToObject(["#EAD7D1", "#2D3142", "#BFC0C0"]),
+    fontFamily: "'Merriweather', serif", 
     preview:
       "https://placehold.co/600x400/EAD7D1/2D3142/png?text=Elegant+Harmony",
   },
@@ -31,6 +32,7 @@ export const TEMPLATE_METADATA = {
     name: "Vivid Spectrum",
     category: "Colorful & Expressive",
     colors: colorArrayToObject(["#6A0572", "#F9DB6D", "#F5F5F5"]),
+    fontFamily: "'Montserrat', sans-serif",
     preview:
       "https://placehold.co/600x400/6A0572/F9DB6D/png?text=Vivid+Spectrum",
   },
@@ -38,6 +40,7 @@ export const TEMPLATE_METADATA = {
     name: "Urban Classic",
     category: "Bold & Refined",
     colors: colorArrayToObject(["#22223B", "#F2E9E4", "#4A4E69"]),
+    fontFamily: "'Lora', serif", 
     preview:
       "https://placehold.co/600x400/22223B/F2E9E4/png?text=Urban+Classic",
   },
@@ -45,6 +48,7 @@ export const TEMPLATE_METADATA = {
     name: "Fresh Perspective",
     category: "Modern & Inviting",
     colors: colorArrayToObject(["#7AE582", "#2B2D42", "#EDF2F4"]),
+    fontFamily: "'Poppins', sans-serif", 
     preview:
       "https://placehold.co/600x400/7AE582/2B2D42/png?text=Fresh+Perspective",
   },
@@ -52,12 +56,14 @@ export const TEMPLATE_METADATA = {
     name: "Radiant Flow",
     category: "Dynamic & Friendly",
     colors: colorArrayToObject(["#FFB4A2", "#6D6875", "#FFF1E6"]),
+    fontFamily: "'Quicksand', sans-serif", 
     preview: "https://placehold.co/600x400/FFB4A2/6D6875/png?text=Radiant+Flow",
   },
   "serene-balance": {
     name: "Serene Balance",
     category: "Soft & Calm",
     colors: colorArrayToObject(["#A7C7E7", "#2E4057", "#F6F5F5"]),
+    fontFamily: "'Nunito', sans-serif", 
     preview:
       "https://placehold.co/600x400/A7C7E7/2E4057/png?text=Serene+Balance",
   },
@@ -65,6 +71,7 @@ export const TEMPLATE_METADATA = {
     name: "Professional Minimalist",
     category: "Corporate & Clean",
     colors: colorArrayToObject(["#FFFFFF", "#1A1A1A", "#0077B6"]),
+    fontFamily: "'Roboto', sans-serif", 
     preview:
       "https://placehold.co/600x400/FFFFFF/1A1A1A/png?text=Professional+Minimalist",
   },
@@ -72,6 +79,7 @@ export const TEMPLATE_METADATA = {
     name: "Tech Innovator",
     category: "Startup & Technology",
     colors: colorArrayToObject(["#232946", "#43D8C9", "#E9EAEC"]),
+    fontFamily: "'Share Tech Mono', monospace", 
     preview:
       "https://placehold.co/600x400/232946/43D8C9/png?text=Tech+Innovator",
   },
@@ -79,6 +87,7 @@ export const TEMPLATE_METADATA = {
     name: "Creative Portfolio",
     category: "Artists & Designers",
     colors: colorArrayToObject(["#FF6F61", "#2E294E", "#F6F7EB"]),
+    fontFamily: "'Pacifico', cursive", 
     preview:
       "https://placehold.co/600x400/FF6F61/2E294E/png?text=Creative+Portfolio",
   },
@@ -86,6 +95,7 @@ export const TEMPLATE_METADATA = {
     name: "Academic Scholar",
     category: "Education & Research",
     colors: colorArrayToObject(["#3E92CC", "#F9F9F9", "#1B1B1E"]),
+    fontFamily: "'PT Serif', serif", 
     preview:
       "https://placehold.co/600x400/3E92CC/F9F9F9/png?text=Academic+Scholar",
   },
@@ -93,6 +103,7 @@ export const TEMPLATE_METADATA = {
     name: "Healthcare Pro",
     category: "Medical & Wellness",
     colors: colorArrayToObject(["#DEF2F1", "#3AAFA9", "#17252A"]),
+    fontFamily: "'Open Sans', sans-serif", 
     preview:
       "https://placehold.co/600x400/DEF2F1/3AAFA9/png?text=Healthcare+Pro",
   },
@@ -100,6 +111,7 @@ export const TEMPLATE_METADATA = {
     name: "Nonprofit Impact",
     category: "Charity & Social Good",
     colors: colorArrayToObject(["#FFE156", "#6A0572", "#F5F5F5"]),
+    fontFamily: "'Ubuntu', sans-serif", 
     preview:
       "https://placehold.co/600x400/FFE156/6A0572/png?text=Nonprofit+Impact",
   },
@@ -107,6 +119,7 @@ export const TEMPLATE_METADATA = {
     name: "Event Organizer",
     category: "Events & Conferences",
     colors: colorArrayToObject(["#FFB997", "#2E4057", "#F6F5F5"]),
+    fontFamily: "'Barlow', sans-serif",
     preview:
       "https://placehold.co/600x400/FFB997/2E4057/png?text=Event+Organizer",
   },
@@ -114,6 +127,7 @@ export const TEMPLATE_METADATA = {
     name: "Freelancer Focus",
     category: "Consultants & Freelancers",
     colors: colorArrayToObject(["#236B4E", "#FFD700", "#C0C0C0"]),
+    fontFamily: "'Source Sans Pro', sans-serif", 
     preview:
       "https://placehold.co/600x400/236B4E/FFD700/png?text=Freelancer+Focus",
   },

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc } from 'firebase/firestore';
+import { doc, setDoc, collection } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { useAuth } from '../../hooks/UseAuth';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function NewProjectPage() {
   const navigate = useNavigate();
@@ -25,7 +26,17 @@ export default function NewProjectPage() {
     setIsSubmitting(true);
 
     try {
-      await addDoc(collection(db, 'projects'), {
+      const projectRef = doc(collection(db, 'projects'));
+      let finalImageUrl = formData.imageUrl || "";
+
+      if (formData.imageFile) {
+        const storage = getStorage();
+        const storageRef = ref(storage, `projects/${projectRef.id}/${formData.imageFile.name}`);
+        await uploadBytes(storageRef, formData.imageFile);
+        finalImageUrl = await getDownloadURL(storageRef);
+      }
+
+      await setDoc(projectRef, {
         title: formData.title || "",
         role: formData.role || "",
         description: formData.description || "",
@@ -42,10 +53,11 @@ export default function NewProjectPage() {
         contact: formData.contact
           ? formData.contact.split('\n').map(line => line.trim()).filter(Boolean)
           : [],
-        imageUrl: formData.imageUrl || "",
+        imageUrl: finalImageUrl,
         createdAt: new Date(),
         userId: user.uid || ""
       });
+
       navigate('/dashboard/portfolio');
     } catch (error) {
       console.error('Submission error:', error);

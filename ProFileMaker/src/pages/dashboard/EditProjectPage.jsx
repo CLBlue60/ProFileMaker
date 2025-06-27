@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { db, storage } from '../../firebase/firebaseConfig';
+import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { db } from '../../firebase/firebaseConfig';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function EditProjectPage() {
   const { id } = useParams();
@@ -16,8 +16,8 @@ export default function EditProjectPage() {
     tags: '',
     contact: '',
     imageUrl: '',
+    imageFile: null
   });
-  const [imageFile, setImageFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -40,6 +40,7 @@ export default function EditProjectPage() {
             tags: data.tags ? data.tags.join(', ') : '',
             contact: data.contact ? data.contact.join('\n') : '',
             imageUrl: data.imageUrl || '',
+            imageFile: null
           });
         } else {
           throw new Error('Project not found');
@@ -55,181 +56,163 @@ export default function EditProjectPage() {
     fetchProject();
   }, [id]);
 
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, imageFile: e.target.files[0] });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const projectRef = doc(db, 'projects', id);
-      let imageUrl = formData.imageUrl;
+      let finalImageUrl = formData.imageUrl || "";
 
-      if (imageFile) {
-        if (formData.imageUrl) {
-          try {
-            const oldImageRef = ref(storage, formData.imageUrl);
-            await deleteObject(oldImageRef);
-          } catch (error) {
-            console.log('No old image to delete or error deleting:', error);
-          }
-        }
-        const storageRef = ref(storage, `projects/${id}/${imageFile.name}`);
-        const snapshot = await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(snapshot.ref);
+      if (formData.imageFile) {
+        const storage = getStorage();
+        const storageRef = ref(storage, `projects/${id}/${formData.imageFile.name}`);
+        await uploadBytes(storageRef, formData.imageFile);
+        finalImageUrl = await getDownloadURL(storageRef);
       }
 
-      await updateDoc(projectRef, {
-        title: formData.title,
-        role: formData.role,
-        description: formData.description,
-        about: formData.about,
+      await updateDoc(doc(db, 'projects', id), {
+        title: formData.title || "",
+        role: formData.role || "",
+        description: formData.description || "",
+        about: formData.about || "",
         experience: formData.experience
           ? formData.experience.split('\n').map(line => {
               const [title, company, period] = line.split('|').map(s => s.trim());
-              return { title, company, period };
+              return { title: title || "", company: company || "", period: period || "" };
             })
           : [],
-        tags: formData.tags.split(',').map(tag => tag.trim()),
-        contact: formData.contact
-          ? formData.contact.split('\n').map(line => line.trim())
+        tags: formData.tags
+          ? formData.tags.split(',').map(tag => tag.trim()).filter(Boolean)
           : [],
-        imageUrl,
-        updatedAt: new Date(),
+        contact: formData.contact
+          ? formData.contact.split('\n').map(line => line.trim()).filter(Boolean)
+          : [],
+        imageUrl: finalImageUrl
       });
 
       navigate('/dashboard/portfolio');
     } catch (error) {
-      console.error('Submission error:', error);
-      alert('There was an error updating the project. Please try again.');
+      console.error('Update error:', error);
+      alert('Failed to update project');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleFileChange = (e) => {
-    setImageFile(e.target.files[0]);
-  };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <p>Loading project data...</p>
-      </div>
-    );
-  }
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Edit Project</h1>
-      </div>
-
-      <form onSubmit={handleSubmit} className="max-w-3xl">
-        <div className="space-y-6">
-          <div>
-            <label className="block mb-2 font-medium">Project Title</label>
-            <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => setFormData({...formData, title: e.target.value})}
-              className="w-full p-3 border rounded-lg"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-2 font-medium">Role</label>
-            <input
-              type="text"
-              value={formData.role}
-              onChange={e => setFormData({ ...formData, role: e.target.value })}
-              className="w-full p-3 border rounded-lg"
-              placeholder="e.g. Senior Product Designer"
-            />
-          </div>
-          <div>
-            <label className="block mb-2 font-medium">Short Description</label>
-            <textarea
-              value={formData.description}
-              onChange={e => setFormData({ ...formData, description: e.target.value })}
-              className="w-full p-3 border rounded-lg"
-              rows="2"
-              required
-            />
-          </div>
-          <div>
-            <label className="block mb-2 font-medium">About</label>
-            <textarea
-              value={formData.about}
-              onChange={e => setFormData({ ...formData, about: e.target.value })}
-              className="w-full p-3 border rounded-lg"
-              rows="3"
-            />
-          </div>
-          <div>
-            <label className="block mb-2 font-medium">Experience (one per line, format: Title | Company | Period)</label>
-            <textarea
-              value={formData.experience}
-              onChange={e => setFormData({ ...formData, experience: e.target.value })}
-              className="w-full p-3 border rounded-lg"
-              rows="3"
-              placeholder={`Lead Product Designer | TechStart Inc. | 2020-Present\nUI/UX Designer | Adobe | 2017-2020`}
-            />
-          </div>
-          <div>
-            <label className="block mb-2 font-medium">Skills/Tags (comma separated)</label>
-            <input
-              type="text"
-              value={formData.tags}
-              onChange={e => setFormData({ ...formData, tags: e.target.value })}
-              className="w-full p-3 border rounded-lg"
-              placeholder="React, Node.js, Design"
-            />
-          </div>
-          <div>
-            <label className="block mb-2 font-medium">Contact (one per line)</label>
-            <textarea
-              value={formData.contact}
-              onChange={e => setFormData({ ...formData, contact: e.target.value })}
-              className="w-full p-3 border rounded-lg"
-              rows="2"
-              placeholder={`email@example.com\nlinkedin.com/in/yourprofile`}
-            />
-          </div>
-          <div>
-            <label className="block mb-2 font-medium">Image URL</label>
-            <input
-              type="url"
-              value={formData.imageUrl}
-              onChange={e => setFormData({ ...formData, imageUrl: e.target.value })}
-              className="w-full p-3 border rounded-lg"
-              placeholder="https://example.com/image.jpg"
-              required={!imageFile}
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-medium">Or Upload Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-          </div>
-          <div className="flex gap-3 pt-4">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50"
-            >
-              {isSubmitting ? 'Updating Project...' : 'Update Project'}
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/dashboard/portfolio')}
-              className="px-6 py-3 border rounded-lg"
-            >
-              Cancel
-            </button>
-          </div>
+    <div className="max-w-2xl mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-6">Edit Project</h1>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="title">Project Title</label>
+          <input
+            id="title"
+            type="text"
+            value={formData.title}
+            onChange={(e) => setFormData({...formData, title: e.target.value})}
+            className="w-full p-3 border rounded-lg"
+            required
+          />
         </div>
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="role">Role</label>
+          <input
+            id="role"
+            type="text"
+            value={formData.role}
+            onChange={e => setFormData({ ...formData, role: e.target.value })}
+            className="w-full p-3 border rounded-lg"
+            placeholder="e.g. Senior Product Designer"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="description">Short Description</label>
+          <textarea
+            id="description"
+            value={formData.description}
+            onChange={e => setFormData({ ...formData, description: e.target.value })}
+            className="w-full p-3 border rounded-lg"
+            rows="2"
+            required
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="about">About</label>
+          <textarea
+            id="about"
+            value={formData.about}
+            onChange={e => setFormData({ ...formData, about: e.target.value })}
+            className="w-full p-3 border rounded-lg"
+            rows="3"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="experience">Experience (one per line, format: Title | Company | Period)</label>
+          <textarea
+            id="experience"
+            value={formData.experience}
+            onChange={e => setFormData({ ...formData, experience: e.target.value })}
+            className="w-full p-3 border rounded-lg"
+            rows="3"
+            placeholder={`Lead Product Designer | TechStart Inc. | 2020-Present\nUI/UX Designer | Adobe | 2017-2020`}
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="tags">Skills/Tags (comma separated)</label>
+          <input
+            id="tags"
+            type="text"
+            value={formData.tags}
+            onChange={e => setFormData({ ...formData, tags: e.target.value })}
+            className="w-full p-3 border rounded-lg"
+            placeholder="React, Node.js, Design"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="contact">Contact (one per line)</label>
+          <textarea
+            id="contact"
+            value={formData.contact}
+            onChange={e => setFormData({ ...formData, contact: e.target.value })}
+            className="w-full p-3 border rounded-lg"
+            rows="2"
+            placeholder={`email@example.com\nlinkedin.com/in/yourprofile`}
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="imageUrl">Image URL</label>
+          <input
+            id="imageUrl"
+            type="url"
+            value={formData.imageUrl}
+            onChange={e => setFormData({ ...formData, imageUrl: e.target.value })}
+            className="w-full p-3 border rounded-lg"
+            placeholder="https://example.com/image.jpg"
+            required={!formData.imageFile}
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium" htmlFor="imageFile">Or Upload Image</label>
+          <input
+            id="imageFile"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full py-3 px-6 rounded-md bg-primary text-white font-semibold text-lg hover:bg-primary/90 transition disabled:opacity-60"
+        >
+          {isSubmitting ? 'Saving...' : 'Save Changes'}
+        </button>
       </form>
     </div>
   );

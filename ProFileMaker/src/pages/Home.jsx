@@ -1,11 +1,31 @@
+import { useState } from "react";
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/UseAuth';
 import ProfilePreview from '../components/ProfilePreview';
-// eslint-disable-next-line no-unused-vars
-import { motion, AnimatePresence } from 'framer-motion';
+import { TEMPLATE_METADATA } from "../features/index";
+import { motion } from 'framer-motion';
+
+const carouselTemplateIds = [
+  "elegant-harmony",
+  "tech-innovator",
+  "vivid-spectrum"
+];
+
+const carouselTemplates = carouselTemplateIds.map(id => TEMPLATE_METADATA[id]);
 
 export default function Home() {
   const { user } = useAuth();
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
+  const handlePrev = () => {
+    setCarouselIndex((prev) => (prev === 0 ? carouselTemplates.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCarouselIndex((prev) => (prev === carouselTemplates.length - 1 ? 0 : prev + 1));
+  };
+
+  console.log(carouselTemplates[carouselIndex]);
 
   return (
     <section className="relative overflow-hidden min-h-[calc(100vh-64px)] flex items-center flex-col">
@@ -51,7 +71,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Animated Profile Preview Section */}
+      {/* Animated Profile Preview Carousel Section */}
       <section className="relative z-10 py-12 w-full">
         <div className="max-w-7xl mx-auto text-center mb-12 px-4">
           <motion.h2
@@ -73,7 +93,43 @@ export default function Home() {
             Interactive preview of different template styles
           </motion.p>
         </div>
-        <ProfilePreview />
+        <div className="flex flex-col items-center">
+          <div className="flex items-center gap-4">
+            <button
+              aria-label="Previous template"
+              onClick={handlePrev}
+              className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
+            >
+              &#8592;
+            </button>
+            <div className="w-full max-w-2xl">
+              <h3 className="text-xl font-semibold mb-2 text-center">
+                {carouselTemplates[carouselIndex]?.name}
+              </h3>
+              <ProfilePreview
+                template={carouselTemplates[carouselIndex]}
+                showBrowseTemplates={true}
+              />
+            </div>
+            <button
+              aria-label="Next template"
+              onClick={handleNext}
+              className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
+            >
+              &#8594;
+            </button>
+          </div>
+          <div className="flex justify-center gap-2 mt-4">
+            {carouselTemplates.map((t, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCarouselIndex(idx)}
+                className={`w-3 h-3 rounded-full ${carouselIndex === idx ? "bg-accent" : "bg-gray-300"}`}
+                aria-label={`Show template ${t.name}`}
+              />
+            ))}
+          </div>
+        </div>
       </section>
     </section>
   );

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import FirebaseAuthUI from '../components/FirebaseAuthUI';
 
 export default function Login() {
@@ -11,14 +12,14 @@ export default function Login() {
         <div className="mt-4 text-center text-sm text-text dark:text-black">
           <p>
             Don't have an account?{' '}
-            <a href="/signup" className="text-accent hover:underline">
+            <Link to="/signup" className="text-accent hover:underline">
               Sign Up
-            </a>
+            </Link>
           </p>
           <p className="mt-2">
-            <a href="/forgot-password" className="text-accent hover:underline">
+            <Link to="/forgot-password" className="text-accent hover:underline">
               Forgot password?
-            </a>
+            </Link>
           </p>
         </div>
       </div>

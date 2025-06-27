@@ -28,6 +28,7 @@ import ProfilePage from './pages/dashboard/ProfilePage';
 import EditProfilePage from './pages/dashboard/EditProfilePage';
 import PortfolioPage from './pages/dashboard/PortfolioPage';
 import NewProjectPage from './pages/dashboard/NewProjectPage';
+import EditProjectPage from './pages/dashboard/EditProjectPage'; 
 import SettingsPage from './pages/dashboard/SettingsPage';
 
 // Auth
@@ -68,7 +69,7 @@ const router = createBrowserRouter([
       { path: 'profile/edit', element: <EditProfilePage /> },
       { path: 'portfolio', element: <PortfolioPage /> },
       { path: 'portfolio/new', element: <NewProjectPage /> },
-      { path: 'portfolio/edit/:id', element: <NewProjectPage /> },
+      { path: 'portfolio/edit/:id', element: <EditProjectPage /> },
       { path: 'settings', element: <SettingsPage /> },
     ]
   }

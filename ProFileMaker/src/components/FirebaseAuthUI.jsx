@@ -12,12 +12,17 @@ export default function FirebaseAuthUI() {
 
     const uiConfig = {
       signInSuccessUrl: '/dashboard',
+      signInFlow: 'popup',
       signInOptions: [
         GoogleAuthProvider.PROVIDER_ID,
-        'microsoft.com', // Microsoft provider
-        'yahoo.com',     // Yahoo provider
-        EmailAuthProvider.PROVIDER_ID,
+        'microsoft.com',
+        'yahoo.com',
+        {
+          provider: EmailAuthProvider.PROVIDER_ID,
+          requireDisplayName: false
+        }
       ],
+      credentialHelper: firebaseui.auth.CredentialHelper.NONE,
       tosUrl: '/terms',
       privacyPolicyUrl: '/privacy',
     };

@@ -3,9 +3,11 @@ import { useAuth } from "../../hooks/UseAuth";
 import UserAvatar from "../../components/UserAvatar";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 export default function EditProfilePage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     displayName: user?.displayName || '',
     bio: user?.bio || '',
@@ -19,20 +21,29 @@ export default function EditProfilePage() {
     const db = getFirestore();
     const storage = getStorage();
 
-    if (file) {
+    try {
       setUploading(true);
-      // Upload to profile_pictures/{userId}/...
-      const storageRef = ref(storage, `profile_pictures/${user.uid}/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-      await setDoc(doc(db, "profiles", user.uid), { avatarUrl: downloadURL }, { merge: true });
-      setFormData((prev) => ({ ...prev, avatarUrl: downloadURL }));
+      if (file) {
+        const storageRef = ref(storage, `profile_pictures/${user.uid}/${file.name}`);
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
+        await setDoc(doc(db, "profiles", user.uid), { avatarUrl: downloadURL }, { merge: true });
+        setFormData((prev) => ({ ...prev, avatarUrl: downloadURL }));
+      } else if (url) {
+        await setDoc(doc(db, "profiles", user.uid), { avatarUrl: url }, { merge: true });
+        setFormData((prev) => ({ ...prev, avatarUrl: url }));
+      }
+    } catch (error) {
+      alert("Failed to upload avatar: " + error.message);
+      console.error(error);
+    } finally {
       setUploading(false);
-    } else if (url) {
-      await setDoc(doc(db, "profiles", user.uid), { avatarUrl: url }, { merge: true });
-      setFormData((prev) => ({ ...prev, avatarUrl: url }));
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  }
 
   return (
     <div>
