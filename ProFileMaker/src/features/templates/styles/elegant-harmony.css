@@ -1,0 +1,94 @@
+:root {
+  --eh-primary: #EAD7D1;
+  --eh-secondary: #2D3142;
+  --eh-accent: #BFC0C0;
+}
+
+.eh-template {
+  background: var(--eh-primary);
+  color: var(--eh-secondary);
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px 0 rgba(45,49,66,0.08);
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2.5rem 2rem;
+}
+
+.eh-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.eh-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+  color: var(--eh-secondary);
+}
+
+.eh-headline {
+  font-size: 1.25rem;
+  color: var(--eh-accent);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.eh-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.eh-about h2,
+.eh-skills h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--eh-secondary);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+
+.eh-about p {
+  font-size: 1.05rem;
+  color: var(--eh-secondary);
+  background: rgba(191,192,192,0.08);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.eh-skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.eh-skill-pill {
+  background: var(--eh-accent);
+  color: var(--eh-secondary);
+  padding: 0.4em 1em;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px 0 rgba(45,49,66,0.07);
+  transition: background 0.2s, color 0.2s;
+}
+
+.eh-skill-pill:hover {
+  background: var(--eh-secondary);
+  color: var(--eh-primary);
+}
+
+@media (max-width: 600px) {
+  .eh-template {
+    padding: 1.2rem 0.5rem;
+  }
+  .eh-header h1 {
+    font-size: 2rem;
+  }
+    .eh-main {
+      gap: 1.5rem;
+    }
+  }
+    

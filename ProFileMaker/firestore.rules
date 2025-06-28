@@ -88,7 +88,10 @@ service cloud.firestore {
       allow read: if resource.data.isPublished == true || isOwner(userId);
       allow create, update: if isOwner(userId) && (
         (
-          request.resource.data.keys().hasOnly(['selectedTemplate', 'lastUpdated', 'userId'])
+          // Allow updates that only touch these fields
+          request.resource.data.keys().hasOnly([
+            'selectedTemplate', 'lastUpdated', 'userId', 'avatarUrl', 'displayName', 'bio', 'location'
+          ])
         ) ||
         (
           request.resource.data.displayName is string &&

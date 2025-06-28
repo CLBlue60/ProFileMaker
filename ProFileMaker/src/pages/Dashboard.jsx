@@ -113,7 +113,7 @@ export default function Dashboard() {
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-primary to-accent rounded-xl p-6 mb-8">
         <div className="flex items-center gap-4">
-          <UserAvatar user={user} avatarUrl={user?.avatarUrl} size="lg" readonly />
+          <UserAvatar user={user} avatarUrl={profile?.avatarUrl} size="lg" readonly />
           <div>
             <h1 className="text-2xl md:text-3xl font-bold">
               Welcome back, {user?.displayName || 'User'}!

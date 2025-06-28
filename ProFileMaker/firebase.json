@@ -9,7 +9,7 @@
     "rules": "storage.rules"
   },
   "hosting": {
-    "public": "build",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
